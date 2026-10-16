@@ -19,7 +19,6 @@
         <a class="gallery-thumb" href="{{ img.image.url }}" aria-label="View larger: {{ img.title }}">
           <img src="{{ img.image|thumb:720 }}" alt="{{ img.alt_text }}" loading="lazy">
         </a>
-        <figcaption>{% if img.caption %}{{ img.caption }}{% else %}{{ img.title }}{% endif %}</figcaption>
       </figure>
       {% endfor %}
     </div>

@@ -21,30 +21,30 @@ PHOTOS = Path(settings.BASE_DIR) / "site_photos"
 
 # file stem -> (gallery title, caption, alt text, category)
 GALLERY = {
-    # ---- first six are not used elsewhere on the homepage, so the homepage gallery preview never repeats a hero/program photo
+    # ---- first six = homepage gallery preview: none of them is used elsewhere on the homepage
     "inauguration-bouquet": ("Inauguration ceremony: bouquet presentation", "The opening of the academy at Oxford International College",
                              "Guests presenting a bouquet and a plant during the academy's inauguration ceremony", "Events"),
-    "inauguration-memento": ("Inauguration ceremony: memento presentation", "Guests exchanging a memento at the inauguration",
-                             "Guests exchanging a memento in front of the Rudra Sports banner at the inauguration", "Events"),
     "inauguration-hall": ("Inauguration ceremony: guests in the hall", "Well-wishers gathered in the academy hall",
                           "Guests and well-wishers standing in front of the shooting equipment table in the academy hall", "Events"),
     "inauguration-first-shot": ("Inauguration ceremony: trying the air pistol", "A guest takes aim during the opening",
                                 "A guest in a yellow kurta aiming an air pistol during the inauguration, with other guests watching", "Events"),
     "inauguration-guests": ("Inauguration ceremony: guests greeting", "Greetings and celebration on opening day",
                             "Guests greeting each other near a rangoli and balloon decorations at the academy opening", "Events"),
-    "training-coach-pistol": ("Coach guiding a student", "Pistol stance demonstration at the range",
-                              "A coach demonstrating the pistol stance to a student at the shooting range", "Training"),
-    # ---- remaining photos
-    "training-rifle-session": ("Rifle practice under supervision", "A student at the firing line with a coach nearby",
-                               "A student in school uniform aiming an air rifle while a coach supervises", "Training"),
+    "range-reception": ("Reception and seating area", "Visitors waiting inside the range hall",
+                        "Visitors seated near the Rudra Sports reception desk inside the range hall", "Range & Facilities"),
     "inauguration-group": ("The academy team and guests", "Group photograph at the inauguration",
                            "Guests and the academy team standing together in front of the Rudra Sports banner", "Events"),
+    # ---- remaining photos
+    "inauguration-felicitation": ("Inauguration ceremony: felicitation", "Guests exchanging a memento at the inauguration",
+                                  "Seven guests standing together as a memento is presented in front of the Rudra Sports banner", "Events"),
+    "training-coach-pistol": ("Coach guiding a student", "Pistol stance demonstration at the range",
+                              "A coach demonstrating the pistol stance to a student while other students watch", "Training"),
+    "training-rifle-session": ("Rifle demonstration for students", "A coach shows how to aim an air rifle",
+                               "A coach demonstrating how to aim an air rifle while students in uniform watch", "Training"),
     "range-olympic-rings": ("The range hall", "Olympic rings painted along the hall wall",
                             "The academy's range hall with Olympic rings painted on the wall and shooter artwork at the far end", "Range & Facilities"),
     "range-lanes": ("The firing line", "Numbered lanes under the Rudra Sports banner",
                     "An empty firing line with numbered lanes and the Rudra Sports banner on the wall", "Range & Facilities"),
-    "range-reception": ("Reception and seating area", "Visitors waiting inside the range hall",
-                        "Visitors seated near the Rudra Sports reception desk inside the range hall", "Range & Facilities"),
     "training-students-line": ("Students ready for a session", "School students lined up inside the range hall",
                                "School students in uniform standing in a line inside the range hall", "Training"),
     "training-class-seated": ("Students listening to a briefing", "A coach addressing students before practice",
@@ -60,6 +60,7 @@ GALLERY = {
     "press-coverage": ("In the news: academy launch", "Newspaper coverage of the academy's grand opening",
                        "Newspaper clipping reporting the grand opening of Rudra Sports Rifle Shooting Academy", "In the News"),
 }
+RETIRED = ["inauguration-memento"]  # replaced by a better frame of the same moment; removed so nothing looks duplicated
 
 # homepage carousel, in slide order
 SLIDES = [
@@ -69,14 +70,14 @@ SLIDES = [
     ("training-students-line", "School students in uniform standing in a line inside the range hall"),
 ]
 PROGRAMS = {
-    "beginner-shooting-program": ("training-coach-guidance", "A coach adjusting a young student's position while other students watch"),
-    "junior-shooter-development-program": ("training-kids-pistol", "Young students taking aim with air pistols at the firing line with a coach beside them"),
-    "advanced-competitive-training": ("shooter-boy-air-rifle", "A student aiming an air rifle at the firing line"),
-    "pay-and-play": ("shooter-woman-rifle", "A woman wearing red ear defenders aiming an air rifle at the range"),
+    "beginner-shooting-program": ("training-coach-pistol", "A coach demonstrating the pistol stance to a student while other students watch", "center"),
+    "junior-shooter-development-program": ("training-kids-pistol", "Young students taking aim with air pistols at the firing line with a coach beside them", "center"),
+    "advanced-competitive-training": ("shooter-boy-air-rifle", "A student aiming an air rifle at the firing line", "center"),
+    "pay-and-play": ("training-rifle-session", "A coach demonstrating how to aim an air rifle while students in uniform watch", "center"),
 }
 SITE = {  # SiteSettings field -> (photo, alt)
     "hero_image": ("range-olympic-rings", "The academy's range hall with Olympic rings painted on the wall"),
-    "about_image": ("inauguration-group", "Guests and the academy team standing together in front of the Rudra Sports banner"),
+    "about_image": ("inauguration-felicitation", "Seven guests standing together as a memento is presented in front of the Rudra Sports banner"),
     "contact_image": ("range-reception", "Visitors seated near the Rudra Sports reception desk inside the range hall"),
 }
 
@@ -105,18 +106,25 @@ class Command(BaseCommand):
             return
         done = 0
 
-        # gallery: remove only the old placeholder entries, then add each photo once
+        # gallery: drop old placeholders and retired photos, then add / update each photo once (matched by file name)
         for old in GalleryImage.objects.filter(caption="Sample photo - to be replaced"):
             old.image.delete(save=False)
             old.delete()
+        for stem in RETIRED:
+            for old in GalleryImage.objects.filter(image__startswith=f"gallery/{stem}"):
+                old.image.delete(save=False)
+                old.delete()
         cats = {}
         for order, (stem, (title, caption, alt, cat_name)) in enumerate(GALLERY.items()):
             cat = cats.get(cat_name) or Category.objects.get_or_create(name=cat_name, defaults={"order": 10 + len(cats)})[0]
             cats[cat_name] = cat
-            img, created = GalleryImage.objects.get_or_create(title=title, defaults={"alt_text": alt, "caption": caption, "category": cat, "order": order})
-            if created or refresh or not img.image:
+            img = GalleryImage.objects.filter(image__startswith=f"gallery/{stem}").first() or GalleryImage.objects.filter(title=title).first()
+            created = img is None
+            if created:
+                img = GalleryImage(title=title)
+            if created or refresh or not img.image or Path(img.image.name).stem.split("_")[0] != stem:
                 self.attach(img, "image", stem, True)
-            img.alt_text, img.caption, img.category, img.order = alt, caption, cat, order
+            img.title, img.alt_text, img.caption, img.category, img.order = title, alt, caption, cat, order
             img.save()
             done += created
 
@@ -124,11 +132,12 @@ class Command(BaseCommand):
             self.attach(slide, "image", stem, refresh)
             slide.image_alt = alt
             slide.save()
-        for slug, (stem, alt) in PROGRAMS.items():
+        for slug, (stem, alt, focus) in PROGRAMS.items():
             program = Program.objects.filter(slug=slug).first()
             if program:
                 self.attach(program, "image", stem, refresh)
                 program.image_alt = alt
+                program.image_focus = focus
                 program.save()
         site = SiteSettings.load()
         for field, (stem, alt) in SITE.items():
