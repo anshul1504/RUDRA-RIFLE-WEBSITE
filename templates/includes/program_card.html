@@ -7,7 +7,7 @@
     {% endif %}
   </div>
   <div class="card-rudra__body">
-    <h3><a href="{{ program.get_absolute_url }}">{{ program.title }}</a></h3>
+    <h3><a class="stretched-link" href="{{ program.get_absolute_url }}">{{ program.title }}</a></h3>
     <p>{{ program.summary }}</p>
     {% with items=program.highlights.all %}
     {% if items %}
@@ -16,6 +16,6 @@
     </ul>
     {% endif %}
     {% endwith %}
-    <div class="card-rudra__foot">{% if program.allow_booking and site.show_booking %}<span class="badge text-bg-warning mb-2 d-inline-block"><i class="bi bi-calendar2-check me-1" aria-hidden="true"></i>Slot booking available</span><br>{% endif %}<span class="link-arrow">View program <i class="bi bi-arrow-right" aria-hidden="true"></i></span></div>
+    <div class="card-rudra__foot">{% if program.allow_booking and site.show_booking %}<span class="badge text-bg-warning mb-2 d-inline-block"><i class="bi bi-calendar2-check me-1" aria-hidden="true"></i>Slot booking available</span>{% endif %}</div>
   </div>
 </article>

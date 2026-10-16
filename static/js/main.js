@@ -19,8 +19,8 @@
     var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var carousel = window.bootstrap.Carousel.getOrCreateInstance(hero, { interval: interval, ride: false, pause: false, touch: true, wrap: true });
     var toggle = document.getElementById("heroToggle");
-    var current = document.getElementById("heroCurrent");
-    var userPaused = reduce, hoverPaused = false;
+    var userPaused = false, hoverPaused = false;  /* autoplay always starts; touch taps must not leave it paused */
+    var canHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     hero.style.setProperty("--hero-interval", interval / 1000 + "s");
     var apply = function () {
       var paused = userPaused || hoverPaused;
@@ -34,15 +34,13 @@
     };
     apply();
     if (toggle) { toggle.addEventListener("click", function () { userPaused = !userPaused; apply(); }); }
-    hero.addEventListener("mouseenter", function () { hoverPaused = true; apply(); });
+    hero.addEventListener("mouseenter", function () { if (canHover) { hoverPaused = true; apply(); } });
     hero.addEventListener("mouseleave", function () { hoverPaused = false; apply(); });
-    hero.addEventListener("focusin", function () { hoverPaused = true; apply(); });
+    hero.addEventListener("focusin", function (e) { if (e.target.matches && e.target.matches(":focus-visible") && canHover) { hoverPaused = true; apply(); } });
     hero.addEventListener("focusout", function () { hoverPaused = false; apply(); });
     hero.addEventListener("slid.bs.carousel", function (e) {
-      if (current) { current.textContent = String(e.to + 1).padStart(2, "0"); }
-      hero.querySelectorAll(".hero-indicators button").forEach(function (b, i) {
-        if (i === e.to) { b.setAttribute("aria-current", "true"); } else { b.removeAttribute("aria-current"); }
-      });
+      /* after a manual prev/next click, keep auto-rotating */
+      if (!userPaused && !hoverPaused) { carousel.cycle(); }
     });
   }
 

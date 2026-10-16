@@ -40,10 +40,6 @@
     {% if slides|length > 1 %}
     <div class="hero-controls">
       <div class="container d-flex align-items-center gap-3">
-        <div class="hero-indicators" role="group" aria-label="Choose slide">
-          {% for s in slides %}<button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Go to slide {{ forloop.counter }}: {{ s.headline }} {{ s.headline_accent }}"><span></span></button>{% endfor %}
-        </div>
-        <span class="hero-counter" aria-hidden="true"><b id="heroCurrent">01</b> / {{ slides|length|stringformat:"02d" }}</span>
         <div class="ms-auto d-flex gap-2">
           <button type="button" class="hero-btn" id="heroToggle" aria-label="Pause slideshow"><i class="bi bi-pause-fill" aria-hidden="true"></i></button>
           <button type="button" class="hero-btn" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="Previous slide"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>

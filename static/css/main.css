@@ -635,3 +635,4 @@ main { animation: pageIn .5s ease both; }
 .nav-cta-mobile { white-space: nowrap; padding: .5rem .85rem; font-size: .85rem; }
 @media (max-width: 359.98px) { .nav-cta-mobile { padding: .45rem .6rem; font-size: .78rem; } .brand-logo { height: 44px; } }
 @media (max-width: 359.98px) { .hero-controls .container { gap: .5rem !important; } .hero-indicators { gap: .2rem; } .hero-indicators button { width: 1.5rem; } .hero-btn { width: 2.2rem; height: 2.2rem; } .hero-controls .d-flex.gap-2 { gap: .35rem !important; } }
+.card-rudra__foot:empty { display: none; }
