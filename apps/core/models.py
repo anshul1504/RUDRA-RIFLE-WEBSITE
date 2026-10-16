@@ -1,5 +1,6 @@
 from urllib.parse import quote, quote_plus
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 
@@ -128,6 +129,10 @@ class SiteSettings(TimeStamped):
     booking_intro = models.TextField(
         "Slot booking page intro", blank=True,
         default="Choose an available practice slot and send a booking request. Our team will confirm it with you.",
+    )
+    booking_days_ahead = models.PositiveSmallIntegerField(
+        "Booking days ahead", default=14, validators=[MinValueValidator(1), MaxValueValidator(60)],
+        help_text="How many days ahead slots are opened for booking. Slots are created automatically every day from the Weekly slot schedules (no schedule = no slots, e.g. Friday).",
     )
     booking_payment_note = models.CharField(
         "Slot booking payment note", max_length=240, blank=True,

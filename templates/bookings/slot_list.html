@@ -8,6 +8,12 @@
   <div class="container">
     {% if site.booking_payment_note %}<div class="draft-banner" role="note"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>{{ site.booking_payment_note }}</div>{% endif %}
     {% if site.opening_hours %}<p class="mb-4"><i class="bi bi-clock me-1" style="color:var(--gold-deep)" aria-hidden="true"></i><strong>Range timing:</strong> {{ site.opening_hours }}</p>{% endif %}
+    {% if date_chips|length > 1 or selected_date %}
+    <div class="filter-bar" role="navigation" aria-label="Choose a date">
+      <a class="filter-btn" href="{% url 'bookings:slots' %}" {% if not selected_date %}aria-current="true" aria-pressed="true"{% else %}aria-pressed="false"{% endif %}>All days</a>
+      {% for d in date_chips %}<a class="filter-btn" href="?date={{ d|date:'Y-m-d' }}" {% if selected_date == d %}aria-current="true" aria-pressed="true"{% else %}aria-pressed="false"{% endif %}>{{ d|date:"D, j M" }}</a>{% endfor %}
+    </div>
+    {% endif %}
     {% if days %}
       {% for day in days %}
       <div class="row g-3 mb-4 pb-4 border-bottom">

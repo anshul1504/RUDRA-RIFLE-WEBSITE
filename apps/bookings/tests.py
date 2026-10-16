@@ -304,3 +304,24 @@ class RangeTimingTests(TestCase):
         resp = self.client.get(reverse("bookings:slots"))
         self.assertContains(resp, "10:00 am to 5:00 pm daily. Friday: Holiday.")
         self.assertFalse(Slot.objects.filter(date__week_day=6).exists())  # Django: 6 = Friday
+
+
+class DateFilterTests(TestCase):
+    def setUp(self):
+        cache.clear()
+        SlotSchedule.objects.all().delete()
+
+    def test_filter_shows_only_chosen_day(self):
+        a, b = make_slot(1, title="Day one"), make_slot(2, title="Day two")
+        page = self.client.get(reverse("bookings:slots"), {"date": b.date.isoformat()})
+        self.assertContains(page, "Day two")
+        self.assertNotContains(page, "Day one")
+        self.assertContains(self.client.get(reverse("bookings:slots")), "All days")
+
+    def test_bad_date_is_ignored_and_days_ahead_setting_used(self):
+        make_slot(1, title="Day one")
+        self.assertContains(self.client.get(reverse("bookings:slots"), {"date": "junk"}), "Day one")
+        s = SiteSettings.load(); s.booking_days_ahead = 3; s.save()
+        SlotSchedule.objects.create(weekday=0, start_time=time(9), end_time=time(10), capacity=2)
+        self.client.get(reverse("bookings:slots"))
+        self.assertTrue(Slot.objects.filter(start_time=time(9)).count() <= 1)

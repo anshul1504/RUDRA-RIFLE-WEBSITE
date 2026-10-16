@@ -1,10 +1,12 @@
 import logging
+from datetime import date
 from itertools import groupby
 
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
 
+from apps.core.models import SiteSettings
 from apps.core.utils import acknowledge, notify_staff, page_enabled, paginate, throttled
 
 from .forms import SeatsUnavailable, SlotBookingForm
@@ -15,15 +17,28 @@ logger = logging.getLogger(__name__)
 
 @page_enabled("show_booking")
 def slot_list(request):
+    ahead = SiteSettings.load().booking_days_ahead
     for schedule in SlotSchedule.objects.filter(is_active=True):
-        schedule.generate(14)  # keep the next two weeks of dated slots available
+        schedule.generate(ahead)  # slots open automatically every day; days without a schedule (Friday) stay empty
     slots = list(Slot.objects.open_for_booking().with_booked())
     slots = [s for s in slots if not s.is_past]
     all_days = [{"date": d, "slots": list(items)} for d, items in groupby(slots, key=lambda s: s.date)]
+    date_chips = [d["date"] for d in all_days]
+    selected = None
+    try:
+        selected = date.fromisoformat(request.GET.get("date", ""))
+    except ValueError:
+        pass
+    if selected in date_chips:
+        all_days = [d for d in all_days if d["date"] == selected]
+    else:
+        selected = None
     page = paginate(request, all_days, 7)  # one page = one week of dates
     return render(request, "bookings/slot_list.html", {
         "page_obj": page,
         "days": page.object_list,
+        "date_chips": date_chips,
+        "selected_date": selected,
         "meta_description": "Book a Pay and Play practice slot at Rudra Sports Rifle Shooting Society, Indore.",
     })
 
