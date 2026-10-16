@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Book {{ slot.date|date:"j M" }} {{ slot.start_time|time:"g:i A" }} | {{ site.organisation_name }}{% endblock %}
+
+{% block content %}
+{% include "includes/page_hero.html" with title="Book this slot" crumb="Book a Slot" eyebrow="Pay and Play" intro="" %}
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-7">
+        <form method="post" class="form-card" novalidate data-once aria-label="Slot booking form">
+          {% csrf_token %}
+          {% if form.non_field_errors %}<div class="alert alert-danger" role="alert">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>{% endif %}
+          <div class="hp-field" aria-hidden="true">{{ form.contact_website.label_tag }}{{ form.contact_website }}</div>
+          {% include "includes/form_field.html" with field=form.name %}
+          <div class="row">
+            <div class="col-md-6">{% include "includes/form_field.html" with field=form.mobile %}</div>
+            <div class="col-md-6">{% include "includes/form_field.html" with field=form.email %}</div>
+            <div class="col-md-6">{% include "includes/form_field.html" with field=form.participants %}</div>
+            <div class="col-md-6">{% include "includes/form_field.html" with field=form.shooting_type %}</div>
+            <div class="col-12">{% include "includes/form_field.html" with field=form.experience_level %}</div>
+          </div>
+          {% include "includes/form_field.html" with field=form.message %}
+          {% include "includes/form_field.html" with field=form.consent %}
+          <button type="submit" class="btn btn-rudra btn-lg">Request booking</button>
+        </form>
+      </div>
+      <div class="col-lg-5">
+        <div class="tile tile--accent h-auto">
+          <h2 class="h5">Your slot</h2>
+          <ul class="detail-list mb-3">
+            <li><span>Date</span><span>{{ slot.date|date:"l, j F Y" }}</span></li>
+            <li><span>Time</span><span>{{ slot.start_time|time:"g:i A" }} &ndash; {{ slot.end_time|time:"g:i A" }}</span></li>
+            {% if slot.program %}<li><span>Program</span><span>{{ slot.program.title }}</span></li>{% endif %}
+            <li><span>Seats left</span><span>{{ slot.seats_left }}</span></li>
+            {% if slot.price_note %}<li><span>Fee</span><span>{{ slot.price_note }}</span></li>{% endif %}
+          </ul>
+          {% if slot.notes %}<p class="small mb-2">{{ slot.notes }}</p>{% endif %}
+          {% if site.booking_payment_note %}<p class="small text-secondary mb-0">{{ site.booking_payment_note }}</p>{% endif %}
+        </div>
+        <a href="{% url 'bookings:slots' %}" class="link-arrow mt-4"><i class="bi bi-arrow-left" aria-hidden="true"></i> Choose a different slot</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

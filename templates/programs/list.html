@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Training Programs | {{ site.organisation_name }}, {{ site.city }}{% endblock %}
+
+{% block content %}
+{% include "includes/page_hero.html" with title="Training Programs" crumb="Training Programs" eyebrow="Learn. Practise. Compete." intro="Professional rifle and pistol shooting training for beginners, juniors and competitive shooters." %}
+<section class="section">
+  <div class="container">
+    {% if programs %}
+    <div class="row g-4">
+      {% for program in programs %}<div class="col-md-6">{% include "includes/program_card.html" %}</div>{% endfor %}
+    </div>
+    <div class="mt-5">{% include "includes/pagination.html" %}</div>
+    <p class="small text-secondary mt-4">Fees, batch timings and eligibility are shared by the academy on request. <a href="{% url 'contact:contact' %}">Contact us</a> or send an <a href="{% url 'admissions:enquiry' %}">admission enquiry</a>.</p>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-bullseye" aria-hidden="true"></i><h3>Programs coming soon</h3><p>Training program details will be published here shortly.</p><a href="{% url 'admissions:enquiry' %}" class="btn btn-rudra">Send an enquiry</a></div>
+    {% endif %}
+  </div>
+</section>
+{% include "includes/cta_band.html" %}
+{% endblock %}

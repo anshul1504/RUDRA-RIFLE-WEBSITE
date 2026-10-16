@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load rudra_tags %}
+{% load static %}
+{% block title %}About Us | {{ site.organisation_name }}, {{ site.city }}{% endblock %}
+
+{% block content %}
+{% include "includes/page_hero.html" with title="About Us" crumb="About Us" eyebrow="Our academy" intro="Aim High. Shoot Right. Build Discipline." %}
+
+{# ---------- Who we are ---------- #}
+<section class="section" aria-labelledby="who-title">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-7">
+        <span class="eyebrow">Who we are</span>
+        <h2 id="who-title" class="mb-3">{{ site.organisation_name }}</h2>
+        <p class="lead">{{ site.about_intro }}</p>
+        <p>We nurture talent from beginner to competitive level, always under safe and guided supervision.</p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{% url 'programs:list' %}" class="btn btn-rudra">Explore programs</a>
+          <a href="{% url 'contact:contact' %}" class="btn btn-outline-rudra">Visit or contact us</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        {% if site.about_image %}
+          <div class="frame"><img src="{{ site.about_image|thumb:1100 }}" alt="{{ site.about_image_alt }}" loading="lazy"></div>
+        {% else %}
+          <div class="frame frame--logo"><img src="{% static 'images/rudra-logo.svg' %}" width="769" height="561" alt="{{ site.organisation_name }} logo" loading="lazy"></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ---------- At a glance ---------- #}
+<section class="glance" aria-label="At a glance">
+  <div class="container">
+    <div class="row g-0 text-center">
+      <div class="col-6 col-lg-3 glance__item"><i class="bi bi-geo-alt" aria-hidden="true"></i><strong>{{ site.city }}</strong><span>{{ site.state }}</span></div>
+      <div class="col-6 col-lg-3 glance__item"><i class="bi bi-bullseye" aria-hidden="true"></i><strong>Rifle &amp; Pistol</strong><span>Shooting training</span></div>
+      <div class="col-6 col-lg-3 glance__item"><i class="bi bi-people" aria-hidden="true"></i><strong>Beginner to Competitive</strong><span>Youth to national-level aspirants</span></div>
+      <div class="col-6 col-lg-3 glance__item"><i class="bi bi-shield-check" aria-hidden="true"></i><strong>Safe &amp; Guided</strong><span>Supervised practice</span></div>
+    </div>
+  </div>
+</section>
+
+{# ---------- Vision & Mission ---------- #}
+<section class="section section--white" aria-labelledby="vm-title">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">Vision &amp; Mission</span><h2 id="vm-title">Where we are headed, and how we get there.</h2></div>
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="tile tile--accent p-4 p-lg-5">
+          <span class="feature__icon"><i class="bi bi-eye" aria-hidden="true"></i></span>
+          <h3 class="mt-2">Our Vision</h3>
+          <p class="quote-block mb-0 mt-3">{{ site.vision_text }}</p>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="tile tile--accent p-4 p-lg-5">
+          <span class="feature__icon"><i class="bi bi-flag" aria-hidden="true"></i></span>
+          <h3 class="mt-2">Our Mission</h3>
+          <p class="quote-block mb-0 mt-3">{{ site.mission_text }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ---------- Shooter's pathway ---------- #}
+<section class="section" aria-labelledby="path-title">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">The shooter's pathway</span><h2 id="path-title">From first lesson to championship.</h2>
+      <p>The academy nurtures talent from beginner to competitive level.</p></div>
+    <ol class="pathway">
+      <li><span class="pathway__n">01</span><h3>Safety &amp; fundamentals</h3><p>Safety training, basic aiming, trigger control, posture and breathing.</p></li>
+      <li><span class="pathway__n">02</span><h3>Guided practice</h3><p>Practice sessions under safe and guided supervision, with individual attention.</p></li>
+      <li><span class="pathway__n">03</span><h3>Competition preparation</h3><p>Match practice, precision drills, mental focus and performance analysis.</p></li>
+      <li><span class="pathway__n">04</span><h3>Championships</h3><p>Participation in district, state and national championships.</p></li>
+    </ol>
+  </div>
+</section>
+
+{# ---------- Programs ---------- #}
+{% if programs %}
+<section class="section section--white" aria-labelledby="prog-title">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 section-head" style="max-width:none">
+      <div style="max-width:42rem"><span class="eyebrow">What we offer</span><h2 id="prog-title">Training programs.</h2></div>
+      <a href="{% url 'programs:list' %}" class="link-arrow">All programs <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    <div class="row g-4">{% for program in programs %}<div class="col-md-6">{% include "includes/program_card.html" %}</div>{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+{# ---------- Core values ---------- #}
+<section class="section" aria-labelledby="val-title">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">Core Values</span><h2 id="val-title">What we build in every shooter.</h2></div>
+    <div class="row g-4">
+      {% for v in core_values %}
+      <div class="col-sm-6 col-lg-3"><div class="tile"><span class="feature__icon"><i class="bi {{ v.icon }}" aria-hidden="true"></i></span><h3>{{ v.title }}</h3><p>{{ v.text }}</p></div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ---------- Why choose us ---------- #}
+{% if why_choose %}
+<section class="section section--tint" aria-labelledby="why-title">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">Why Choose Us</span><h2 id="why-title">Training built on structure, safety and precision.</h2></div>
+    <div class="row g-3">
+      {% for w in why_choose %}<div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi {{ w.icon }}" aria-hidden="true"></i><span>{{ w.title }}</span></div></div>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ---------- Facilities ---------- #}
+{% if facilities %}
+<section class="section" aria-labelledby="fac-title">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 section-head" style="max-width:none">
+      <div style="max-width:42rem"><span class="eyebrow">Facilities &amp; Coaching</span><h2 id="fac-title">Everything a shooter needs to progress.</h2></div>
+      <a href="{% url 'core:facilities' %}" class="link-arrow">All facilities <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    <div class="row g-4">
+      {% for f in facilities %}
+      <div class="col-md-6 col-lg-4"><div class="feature"><span class="feature__icon"><i class="bi {{ f.icon }}" aria-hidden="true"></i></span><div><h3>{{ f.title }}</h3>{% if f.description %}<p>{{ f.description }}</p>{% endif %}</div></div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ---------- Safety ---------- #}
+<section class="section section--indigo safety" aria-labelledby="safe-title">
+  {% include "includes/rings.html" %}
+  <div class="container"><div class="row"><div class="col-lg-8">
+    <span class="safety__badge"><i class="bi bi-shield-check" aria-hidden="true"></i> Responsible Sports Shooting</span>
+    <h2 id="safe-title" class="mb-3">{{ site.safety_heading }}</h2>
+    <p class="lead" style="color:rgba(255,255,255,.9)">{{ site.responsible_text }}</p>
+    <p>{{ site.safety_text }}</p>
+  </div></div></div>
+</section>
+
+{% include "includes/cta_band.html" %}
+{% endblock %}

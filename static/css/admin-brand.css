@@ -1,0 +1,47 @@
+/* Rudra Sports branding for the Jazzmin admin */
+:root { --rs-indigo: #403675; --rs-deep: #2d2552; --rs-gold: #D99A45; --rs-ivory: #F8F7F3; }
+
+.content-wrapper, .content { background: var(--rs-ivory) !important; }
+.main-sidebar, .main-sidebar.sidebar-dark-indigo { background: linear-gradient(180deg, #403675 0%, #2d2552 100%) !important; }
+.brand-link { border-bottom: 1px solid rgba(255, 255, 255, .15) !important; }
+.brand-link .brand-text { font-weight: 600; letter-spacing: .02em; }
+.sidebar-dark-indigo .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-indigo .nav-sidebar .nav-treeview > .nav-item > .nav-link.active { background: var(--rs-gold) !important; color: #24232B !important; box-shadow: none; }
+.nav-sidebar .nav-link:hover { background: rgba(255, 255, 255, .1); }
+.navbar-white { border-bottom: 2px solid var(--rs-gold) !important; }
+
+a { color: var(--rs-indigo); }
+a:hover { color: var(--rs-deep); }
+.btn-primary, .btn-info { background-color: var(--rs-indigo) !important; border-color: var(--rs-indigo) !important; color: #fff !important; }
+.btn-primary:hover, .btn-info:hover { background-color: var(--rs-deep) !important; border-color: var(--rs-deep) !important; }
+.btn-outline-primary { color: var(--rs-indigo); border-color: var(--rs-indigo); }
+.btn-outline-primary:hover { background: var(--rs-indigo); border-color: var(--rs-indigo); color: #fff; }
+.btn-warning { background-color: var(--rs-gold) !important; border-color: var(--rs-gold) !important; color: #24232B !important; }
+.card { border-top: 3px solid var(--rs-gold); box-shadow: 0 1px 3px rgba(36, 35, 43, .08); }
+.card-header { background: #fff; }
+.login-page { background: linear-gradient(160deg, #403675, #2d2552) !important; }
+.login-logo a, .login-logo { color: #fff !important; }
+.nav-tabs .nav-link.active, .nav-pills .nav-link.active { border-top: 3px solid var(--rs-gold); color: var(--rs-indigo); }
+.page-item.active .page-link { background: var(--rs-indigo); border-color: var(--rs-indigo); }
+
+/* Webfix credit */
+.rs-credit { font-size: .85rem; }
+.rs-credit a { color: var(--rs-indigo); font-weight: 600; }
+.rs-credit--floating { position: fixed; left: 0; right: 0; bottom: 12px; text-align: center; }
+.login-page .rs-credit--floating, .login-page .rs-credit--floating a { color: #fff; }
+.login-page .rs-credit--floating a { color: var(--rs-gold); }
+.main-footer { font-size: .85rem; padding: .9rem 1.5rem; }
+
+/* dashboard widgets */
+.rs-kpi { display: flex; align-items: center; gap: 1rem; background: #fff; border: 1px solid #e5e3ee; border-radius: 8px; padding: 1rem 1.1rem; margin-bottom: 1rem; color: #24232B; text-decoration: none !important; transition: transform .2s, box-shadow .2s, border-color .2s; }
+.rs-kpi:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(45, 37, 82, .15); border-color: var(--rs-indigo); }
+.rs-kpi--hot { border-left: 4px solid var(--rs-gold); }
+.rs-kpi__icon { width: 2.8rem; height: 2.8rem; border-radius: 50%; display: grid; place-items: center; background: #ebe9f3; color: var(--rs-indigo); font-size: 1.1rem; }
+.rs-kpi b { display: block; font-size: 1.7rem; line-height: 1.1; }
+.rs-kpi small { color: #55535f; }
+
+/* keep content links readable (brand indigo, not the accent colour) */
+.content-wrapper a:not(.btn):not(.page-link):not(.nav-link) { color: var(--rs-indigo); }
+.content-wrapper a:not(.btn):not(.page-link):not(.nav-link):hover { color: var(--rs-deep); text-decoration: underline; }
+.breadcrumb-item a { color: var(--rs-indigo) !important; }
+.content-wrapper .nav-tabs .nav-link { color: var(--rs-indigo); }

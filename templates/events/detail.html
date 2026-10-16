@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load rudra_tags %}
+{% block title %}{{ event.title }} | Events | {{ site.organisation_name }}{% endblock %}
+{% block og_image %}{% if event.image %}{{ SITE_URL }}{{ event.image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "{{ event.title|escapejs }}",
+  "startDate": "{{ event.start_at|date:'c' }}",
+  {% if event.end_at %}"endDate": "{{ event.end_at|date:'c' }}",{% endif %}
+  "eventStatus": "https://schema.org/EventScheduled",
+  {% if event.location %}"location": {"@type": "Place", "name": "{{ event.location|escapejs }}"},{% endif %}
+  "organizer": {"@type": "Organization", "name": "{{ site.organisation_name|escapejs }}", "url": "{{ SITE_URL }}/"},
+  "url": "{{ SITE_URL }}{{ event.get_absolute_url }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  {% include "includes/rings.html" %}
+  <div class="container">
+    <nav class="breadcrumb-lite" aria-label="Breadcrumb"><a href="{% url 'core:home' %}">Home</a> <span aria-hidden="true">/</span> <a href="{% url 'events:list' %}">Events</a> <span aria-hidden="true">/</span> {{ event.title }}</nav>
+    <span class="eyebrow">{% if event.is_upcoming %}Upcoming event{% else %}Past event{% endif %}</span>
+    <h1>{{ event.title }}</h1>
+    {% if event.summary %}<p>{{ event.summary }}</p>{% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        {% if event.image %}<div class="frame mb-4"><img src="{{ event.image.url }}" alt="{{ event.image_alt }}"></div>{% endif %}
+        <div class="prose">{{ event.description|simple_markup }}</div>
+        {% with photos=event.photos.all %}
+        {% if photos %}
+        <h2 class="h4 mt-5 mb-3">Event photographs</h2>
+        <div class="gallery-grid">
+          {% for p in photos %}
+          <figure class="gallery-item"><a class="gallery-thumb" href="{{ p.image.url }}" target="_blank" rel="noopener" aria-label="Open photo in a new tab: {{ p.alt_text }}"><img src="{{ p.image.url }}" alt="{{ p.alt_text }}" loading="lazy"></a>{% if p.caption %}<figcaption>{{ p.caption }}</figcaption>{% endif %}</figure>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+      </div>
+      <div class="col-lg-4">
+        <aside class="form-card" aria-label="Event details">
+          <h2 class="h5 mb-3">Event details</h2>
+          <ul class="detail-list mb-4">
+            <li><span>Starts</span><span>{{ event.start_at|date:"j M Y, g:i A" }}</span></li>
+            {% if event.end_at %}<li><span>Ends</span><span>{{ event.end_at|date:"j M Y, g:i A" }}</span></li>{% endif %}
+            {% if event.location %}<li><span>Location</span><span>{{ event.location }}</span></li>{% endif %}
+          </ul>
+          {% if event.is_upcoming %}
+            {% if event.registration_url %}
+            <a href="{{ event.registration_url }}" class="btn btn-gold btn-lg w-100 mb-2" target="_blank" rel="noopener">Register <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i></a>
+            {% endif %}
+            <a href="{% url 'admissions:enquiry' %}" class="btn {% if event.registration_url %}btn-outline-rudra{% else %}btn-gold btn-lg{% endif %} w-100">Send an enquiry</a>
+          {% else %}
+            <p class="small text-secondary mb-0">This event has ended.</p>
+          {% endif %}
+        </aside>
+        <a href="{% url 'events:list' %}" class="link-arrow mt-4"><i class="bi bi-arrow-left" aria-hidden="true"></i> All events</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

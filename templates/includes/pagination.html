@@ -1,0 +1,19 @@
+{% load rudra_tags %}{% if page_obj.paginator.num_pages > 1 %}
+<nav class="pager" aria-label="Pagination">
+  <ul class="pagination justify-content-center flex-wrap mb-0">
+    {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="{% page_url page_obj.previous_page_number param|default:'page' %}" rel="prev" aria-label="Previous page"><i class="bi bi-chevron-left" aria-hidden="true"></i> Prev</a></li>
+    {% else %}<li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left" aria-hidden="true"></i> Prev</span></li>{% endif %}
+    {% for n in page_obj.paginator.page_range %}
+      {% if n == page_obj.number %}<li class="page-item active" aria-current="page"><span class="page-link">{{ n }}</span></li>
+      {% elif n >= page_obj.number|add:"-2" and n <= page_obj.number|add:"2" %}<li class="page-item"><a class="page-link" href="{% page_url n param|default:'page' %}">{{ n }}</a></li>
+      {% elif n == 1 or n == page_obj.paginator.num_pages %}<li class="page-item"><a class="page-link" href="{% page_url n param|default:'page' %}">{{ n }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="{% page_url page_obj.next_page_number param|default:'page' %}" rel="next" aria-label="Next page">Next <i class="bi bi-chevron-right" aria-hidden="true"></i></a></li>
+    {% else %}<li class="page-item disabled"><span class="page-link">Next <i class="bi bi-chevron-right" aria-hidden="true"></i></span></li>{% endif %}
+  </ul>
+  <p class="text-center small text-secondary mt-2 mb-0">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+</nav>
+{% endif %}

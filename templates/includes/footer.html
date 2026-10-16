@@ -1,0 +1,51 @@
+{% load static %}
+<footer class="site-footer">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-4">
+        <a class="footer-logo" href="{% url 'core:home' %}" aria-label="{{ site.organisation_name }} - home">
+          <img src="{% static 'images/rudra-logo.svg' %}" width="101" height="74" alt="{{ site.organisation_name }}, {{ site.city }} (M.P.) logo" loading="lazy">
+        </a>
+        <p class="mt-4">{{ site.footer_description }}</p>
+        {% if site.social_links %}
+        <div class="social-links">
+          {% for s in site.social_links %}<a href="{{ s.url }}" target="_blank" rel="noopener" aria-label="{{ s.label }}"><i class="bi {{ s.icon }}" aria-hidden="true"></i></a>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      <div class="col-6 col-lg-2 offset-lg-1">
+        <h2>Explore</h2>
+        <ul>
+          {% if menu.about %}<li><a href="{% url 'core:about' %}">About Us</a></li>{% endif %}
+          {% if menu.programs %}<li><a href="{% url 'programs:list' %}">Training Programs</a></li>{% endif %}
+          {% if menu.facilities %}<li><a href="{% url 'core:facilities' %}">Facilities</a></li>{% endif %}
+          {% if menu.gallery %}<li><a href="{% url 'gallery:index' %}">Gallery</a></li>{% endif %}
+          {% if menu.achievements %}<li><a href="{% url 'achievements:list' %}">Achievements</a></li>{% endif %}
+          {% if menu.events %}<li><a href="{% url 'events:list' %}">Events &amp; Competitions</a></li>{% endif %}
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h2>Join</h2>
+        <ul>
+          {% if menu.enquiry %}<li><a href="{% url 'admissions:enquiry' %}">Admission Enquiry</a></li>{% endif %}
+          {% if site.show_booking %}<li><a href="{% url 'bookings:slots' %}">Book a Slot</a></li>{% endif %}
+          {% if menu.contact %}<li><a href="{% url 'contact:contact' %}">Contact Us</a></li>{% endif %}
+          <li><a href="{% url 'core:privacy' %}">Privacy Policy</a></li>
+          <li><a href="{% url 'core:terms' %}">Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3">
+        <h2>Contact</h2>
+        <ul class="footer-contact">
+          <li><i class="bi bi-geo-alt" aria-hidden="true"></i><span>{{ site.address }}</span></li>
+          <li><i class="bi bi-telephone" aria-hidden="true"></i><a href="{{ site.phone_href }}">{{ site.phone }}</a></li>
+          <li><i class="bi bi-envelope" aria-hidden="true"></i><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between gap-2">
+      <span>&copy; {% now "Y" %} {{ site.organisation_name }}, {{ site.city }}. All rights reserved.</span>
+      <span class="dev-credit">Designed &amp; Developed by <a href="{{ developer_credit.url }}" target="_blank" rel="noopener">{{ developer_credit.label }}</a></span>
+    </div>
+  </div>
+</footer>

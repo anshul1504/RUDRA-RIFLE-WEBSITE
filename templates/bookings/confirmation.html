@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Booking requested | {{ site.organisation_name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container text-center" style="max-width:40rem">
+    <i class="bi bi-check-circle" style="font-size:3.5rem;color:var(--gold-deep)" aria-hidden="true"></i>
+    <h1 class="h2 mt-3">Dhanyavad! Your booking request is received.</h1>
+    <p class="lead mx-auto">Reference: <strong>{{ booking.reference }}</strong></p>
+    <ul class="detail-list text-start my-4">
+      <li><span>Date</span><span>{{ booking.slot.date|date:"l, j F Y" }}</span></li>
+      <li><span>Time</span><span>{{ booking.slot.start_time|time:"g:i A" }} &ndash; {{ booking.slot.end_time|time:"g:i A" }}</span></li>
+      <li><span>Shooters</span><span>{{ booking.participants }}</span></li>
+      <li><span>Type of shooting</span><span>{{ booking.get_shooting_type_display }}</span></li>
+      <li><span>Previous experience</span><span>{{ booking.get_experience_level_display }}</span></li>
+      <li><span>Status</span><span>{{ booking.get_status_display }}</span></li>
+    </ul>
+    <p>The academy will confirm your slot on <strong>{{ booking.mobile }}</strong>. Please keep your reference handy, or call <a href="{{ site.phone_href }}">{{ site.phone }}</a>.</p>
+    <a href="{% url 'core:home' %}" class="btn btn-rudra mt-3">Back to home</a>
+  </div>
+</section>
+{% endblock %}

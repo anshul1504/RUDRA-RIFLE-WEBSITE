@@ -1,0 +1,22 @@
+{% load static rudra_tags %}
+<header class="site-header" id="site-header">
+  <nav class="navbar navbar-expand-xl" aria-label="Main navigation">
+    <div class="container">
+      <a class="navbar-brand m-0" href="{% url 'core:home' %}" aria-label="{{ site.organisation_name }} - home">
+        <img class="brand-logo" src="{% static 'images/rudra-logo.svg' %}" width="88" height="64" alt="{{ site.organisation_name }}, {{ site.city }} (M.P.) logo">
+      </a>
+      {% if nav_cta %}<a class="btn btn-gold btn-sm nav-cta-mobile d-xl-none ms-auto me-2" href="{{ nav_cta.url }}"><span class="d-none d-sm-inline">{{ nav_cta.label }}</span><span class="d-sm-none">Admission</span></a>{% endif %}
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation menu">
+        <i class="bi bi-list" aria-hidden="true"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-xl-center">
+          {% for item in nav_items %}
+          <li class="nav-item"><a class="nav-link {% if item.active %}active{% endif %}" href="{{ item.url }}" {% if item.active %}aria-current="page"{% endif %}>{{ item.label }}</a></li>
+          {% endfor %}
+          {% if nav_cta %}<li class="nav-item nav-cta ms-xl-3 d-none d-xl-block"><a class="btn btn-gold" href="{{ nav_cta.url }}">{{ nav_cta.label }}</a></li>{% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>

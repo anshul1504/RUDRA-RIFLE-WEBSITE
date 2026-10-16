@@ -1,0 +1,9 @@
+<section class="page-hero">
+  {% include "includes/rings.html" %}
+  <div class="container">
+    <nav class="breadcrumb-lite" aria-label="Breadcrumb"><a href="{% url 'core:home' %}">Home</a> <span aria-hidden="true">/</span> {{ crumb|default:title }}</nav>
+    <span class="eyebrow">{{ eyebrow }}</span>
+    <h1>{{ title }}</h1>
+    {% if intro %}<p>{{ intro }}</p>{% endif %}
+  </div>
+</section>

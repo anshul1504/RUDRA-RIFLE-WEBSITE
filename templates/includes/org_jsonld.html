@@ -1,0 +1,20 @@
+{% load static %}<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SportsOrganization",
+  "name": "{{ site.organisation_name|escapejs }}",
+  "url": "{{ SITE_URL }}/",
+  "logo": "{{ SITE_URL }}{% static 'images/rudra-logo.png' %}",
+  "email": "{{ site.email|escapejs }}",
+  "telephone": "{{ site.phone_href|slice:'4:'|escapejs }}",
+  "geo": {"@type": "GeoCoordinates", "latitude": 22.7558407, "longitude": 75.7659442},
+  "hasMap": "{{ site.directions_url|escapejs }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ site.address|escapejs }}",
+    "addressLocality": "{{ site.city|escapejs }}",
+    "addressRegion": "{{ site.state|escapejs }}",
+    "addressCountry": "IN"
+  }
+}
+</script>

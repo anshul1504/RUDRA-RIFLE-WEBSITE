@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load rudra_tags %}
+{% block title %}{{ item.title }} | Achievements | {{ site.organisation_name }}{% endblock %}
+{% block og_image %}{% if item.image %}{{ SITE_URL }}{{ item.image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  {% include "includes/rings.html" %}
+  <div class="container">
+    <nav class="breadcrumb-lite" aria-label="Breadcrumb"><a href="{% url 'core:home' %}">Home</a> <span aria-hidden="true">/</span> <a href="{% url 'achievements:list' %}">Achievements</a> <span aria-hidden="true">/</span> {{ item.title }}</nav>
+    <span class="eyebrow">Achievement</span>
+    <h1>{{ item.title }}</h1>
+    {% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        {% if item.image %}<div class="frame mb-4"><img src="{{ item.image.url }}" alt="{{ item.image_alt }}"></div>{% endif %}
+        <div class="prose">{{ item.description|simple_markup }}</div>
+      </div>
+      <div class="col-lg-4">
+        <ul class="detail-list">
+          {% if item.date %}<li><span>Date</span><span>{{ item.date|date:"j F Y" }}</span></li>{% endif %}
+          {% if item.athlete_name %}<li><span>Shooter</span><span>{{ item.athlete_name }}</span></li>{% endif %}
+        </ul>
+        <a href="{% url 'achievements:list' %}" class="link-arrow mt-4"><i class="bi bi-arrow-left" aria-hidden="true"></i> All achievements</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,17 @@
+.env
+*.sqlite3
+__pycache__/
+*.pyc
+media/
+staticfiles/
+logs/
+.venv/
+venv/
+
+# Photos of people (incl. school children): never commit to a public repository. Upload separately.
+site_photos/*.jpg
+original_photos/*.jpg
+original_photos/*.jpeg
+original_photos/*.png
+original_photos/*.webp
+db.sqlite3

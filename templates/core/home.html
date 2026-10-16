@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+{% load rudra_tags %}
+{% load static %}
+{% block title %}{{ site.organisation_name }}, {{ site.city }} | Rifle &amp; Pistol Shooting Training{% endblock %}
+{% block extra_head %}{% include "includes/org_jsonld.html" %}{% endblock %}
+
+{% block content %}
+{# ---------------- HERO ---------------- #}
+{% if slides %}
+<section class="hero-carousel" aria-roledescription="carousel" aria-label="Featured highlights">
+  <div id="heroCarousel" class="carousel slide carousel-fade" data-interval="6500">
+    <div class="carousel-inner">
+      {% for s in slides %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}" role="group" aria-roledescription="slide" aria-label="{{ forloop.counter }} of {{ slides|length }}">
+        <div class="hero {% if not s.image %}hero--pattern{% endif %}">
+          {% if s.image %}
+            <div class="hero__bg"><img src="{{ s.image.url }}" alt="{{ s.image_alt }}" {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}></div>
+          {% else %}
+            {% include "includes/rings.html" %}
+          {% endif %}
+          <div class="container">
+            <div class="hero__inner">
+              <div class="hero__copy">
+                {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+                {% if forloop.first %}<h1 class="hero-title">{% else %}<h2 class="hero-title">{% endif %}{{ s.headline }}{% if s.headline_accent %} <span class="accent">{{ s.headline_accent }}</span>{% endif %}{% if forloop.first %}</h1>{% else %}</h2>{% endif %}
+                {% if s.text %}<p class="hero__sub">{{ s.text }}</p>{% endif %}
+                <div class="d-flex flex-wrap gap-3">
+                  {% if s.primary_label and s.primary_link %}<a href="{{ s.primary_link }}" class="btn btn-gold btn-lg">{{ s.primary_label }}</a>{% endif %}
+                  {% if s.secondary_label and s.secondary_link %}<a href="{{ s.secondary_link }}" class="btn btn-outline-light-rudra btn-lg">{{ s.secondary_label }}</a>{% endif %}
+                </div>
+              </div>
+              {% if not s.image %}<div class="hero__plate-wrap d-none d-lg-block"><div class="hero__plate"><img src="{% static 'images/rudra-logo.svg' %}" width="769" height="561" alt="{{ site.organisation_name }} emblem"></div></div>{% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if slides|length > 1 %}
+    <div class="hero-controls">
+      <div class="container d-flex align-items-center gap-3">
+        <div class="hero-indicators" role="group" aria-label="Choose slide">
+          {% for s in slides %}<button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Go to slide {{ forloop.counter }}: {{ s.headline }} {{ s.headline_accent }}"><span></span></button>{% endfor %}
+        </div>
+        <span class="hero-counter" aria-hidden="true"><b id="heroCurrent">01</b> / {{ slides|length|stringformat:"02d" }}</span>
+        <div class="ms-auto d-flex gap-2">
+          <button type="button" class="hero-btn" id="heroToggle" aria-label="Pause slideshow"><i class="bi bi-pause-fill" aria-hidden="true"></i></button>
+          <button type="button" class="hero-btn" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="Previous slide"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
+          <button type="button" class="hero-btn" data-bs-target="#heroCarousel" data-bs-slide="next" aria-label="Next slide"><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% else %}
+<section class="hero {% if not site.hero_image %}hero--pattern{% endif %}" aria-labelledby="hero-title">
+  {% if site.hero_image %}
+    <div class="hero__bg"><img src="{{ site.hero_image.url }}" alt="{{ site.hero_image_alt }}" fetchpriority="high"></div>
+  {% else %}
+    {% include "includes/rings.html" %}
+  {% endif %}
+  <div class="container">
+    <div class="hero__inner">
+      <div class="row align-items-center g-5 w-100">
+        <div class="col-lg-{% if site.hero_image %}9{% else %}7{% endif %}">
+          {% if site.hero_eyebrow %}<span class="eyebrow">{{ site.hero_eyebrow }}</span>{% endif %}
+          <h1 id="hero-title">{{ site.hero_headline }} {% if site.hero_headline_accent %}<span class="accent">{{ site.hero_headline_accent }}</span>{% endif %}</h1>
+          <p class="hero__sub">{{ site.hero_subheadline }}</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="{% url 'admissions:enquiry' %}" class="btn btn-gold btn-lg">{{ site.hero_primary_cta }}</a>
+            <a href="{% url 'programs:list' %}" class="btn btn-outline-light-rudra btn-lg">{{ site.hero_secondary_cta }}</a>
+          </div>
+          {% if site.hero_tagline %}<p class="hero__tagline">{{ site.hero_tagline }}</p>{% endif %}
+        </div>
+        {% if not site.hero_image %}
+        <div class="col-lg-5 d-none d-lg-block">
+          <div class="hero__plate"><img src="{% static 'images/rudra-logo.svg' %}" width="769" height="561" alt="{{ site.organisation_name }} emblem"></div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endif %}
+
+{# ---------------- INTRODUCTION ---------------- #}
+<section class="section" aria-labelledby="intro-title">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <span class="eyebrow">Welcome</span>
+        <h2 id="intro-title" class="mb-3">{{ site.intro_heading }}</h2>
+        <p class="lead">{{ site.about_intro }}</p>
+        <p>We nurture talent from beginner to competitive level, always under safe and guided supervision.</p>
+        <a href="{% url 'core:about' %}" class="link-arrow mt-2">About the academy <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      <div class="col-lg-6">
+        {% if site.about_image %}
+          <div class="frame"><img src="{{ site.about_image|thumb:1100 }}" alt="{{ site.about_image_alt }}" loading="lazy"></div>
+        {% else %}
+          <div class="frame frame--logo"><img src="{% static 'images/rudra-logo.svg' %}" width="769" height="561" alt="{{ site.organisation_name }} logo" loading="lazy"></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ---------------- PROGRAMS ---------------- #}
+<section class="section section--white" aria-labelledby="programs-title">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 section-head" style="max-width:none">
+      <div style="max-width:42rem">
+        <span class="eyebrow">Training Programs</span>
+        <h2 id="programs-title">A pathway for every shooter.</h2>
+      </div>
+      <a href="{% url 'programs:list' %}" class="link-arrow">All programs <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    {% if programs %}
+    <div class="row g-4">
+      {% for program in programs %}<div class="col-md-6 col-xl-3">{% include "includes/program_card.html" %}</div>{% endfor %}
+    </div>
+    {% else %}
+      <div class="empty-state"><i class="bi bi-bullseye" aria-hidden="true"></i><h3>Programs coming soon</h3><p>Training program details will be published here shortly.</p><a href="{% url 'admissions:enquiry' %}" class="btn btn-rudra">Send an enquiry</a></div>
+    {% endif %}
+  </div>
+</section>
+
+{# ---------------- PAY AND PLAY / SLOT BOOKING ---------------- #}
+{% if pay_and_play and site.show_booking %}
+<section class="section section--tint" aria-labelledby="pnp-title">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-5">
+        <span class="eyebrow">Pay and Play</span>
+        <h2 id="pnp-title" class="mb-3">Book a practice slot online.</h2>
+        <p class="lead">{{ pay_and_play.summary }}</p>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <a href="{% url 'bookings:slots' %}" class="btn btn-rudra btn-lg"><i class="bi bi-calendar2-check me-1" aria-hidden="true"></i>Book a slot</a>
+          <a href="{{ pay_and_play.get_absolute_url }}" class="btn btn-outline-rudra btn-lg">How it works</a>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        {% if next_slots %}
+        <div class="row g-3">
+          {% for slot in next_slots %}
+          <div class="col-md-4">
+            <a class="tile text-decoration-none h-100 d-block" href="{% url 'bookings:book' slot.pk %}">
+              <p class="meta-line mb-1"><span><i class="bi bi-calendar-event" aria-hidden="true"></i>{{ slot.date|date:"D, j M" }}</span></p>
+              <h3 class="h5 mb-1">{{ slot.start_time|time:"g:i A" }}</h3>
+              <p class="small text-secondary mb-2">{{ slot.start_time|time:"g:i A" }} &ndash; {{ slot.end_time|time:"g:i A" }}</p>
+              <span class="badge text-bg-warning">{{ slot.seats_left }} seat{{ slot.seats_left|pluralize }} left</span>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-calendar2-x" aria-hidden="true"></i><h3>No slots open right now</h3><p>New practice slots are added regularly. Check back soon or contact the academy.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ---------------- FACILITIES & COACHING ---------------- #}
+<section class="section" aria-labelledby="fac-title">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-4">
+        <span class="eyebrow">Facilities &amp; Coaching</span>
+        <h2 id="fac-title" class="mb-3">Everything a shooter needs to progress.</h2>
+        <p class="lead">From a modern shooting range to individual attention for every shooter, as described by the academy.</p>
+        <a href="{% url 'core:facilities' %}" class="btn btn-outline-rudra mt-2">View facilities</a>
+      </div>
+      <div class="col-lg-8">
+        <div class="row g-4">
+          {% for f in facilities %}
+          <div class="col-sm-6">
+            <div class="feature">
+              <span class="feature__icon"><i class="bi {{ f.icon }}" aria-hidden="true"></i></span>
+              <div><h3>{{ f.title }}</h3>{% if f.description %}<p>{{ f.description }}</p>{% endif %}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ---------------- WHY CHOOSE US ---------------- #}
+<section class="section section--tint" aria-labelledby="why-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Why Choose Us</span>
+      <h2 id="why-title">Training built on structure, safety and precision.</h2>
+    </div>
+    <div class="row g-3">
+      {% for w in why_choose %}
+      <div class="col-md-6 col-lg-4"><div class="why-item"><i class="bi {{ w.icon }}" aria-hidden="true"></i><span>{{ w.title }}</span></div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ---------------- SAFETY FIRST ---------------- #}
+<section class="section section--indigo safety" aria-labelledby="safety-title">
+  {% include "includes/rings.html" %}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <span class="safety__badge"><i class="bi bi-shield-check" aria-hidden="true"></i> Safety First</span>
+        <h2 id="safety-title" class="mb-3">{{ site.safety_heading }}</h2>
+        <p class="lead" style="color:rgba(255,255,255,.9)">{{ site.safety_text }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if menu.achievements %}
+{# ---------------- ACHIEVEMENTS ---------------- #}
+<section class="section" aria-labelledby="ach-title">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 section-head" style="max-width:none">
+      <div style="max-width:42rem">
+        <span class="eyebrow">Achievements</span>
+        <h2 id="ach-title">What we work toward.</h2>
+      </div>
+      <a href="{% url 'achievements:list' %}" class="link-arrow">Achievements <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    <div class="row g-4">
+      {% for t in achievement_themes %}
+      <div class="col-sm-6 col-lg-3"><div class="tile tile--accent"><span class="feature__icon"><i class="bi {{ t.icon }}" aria-hidden="true"></i></span><h3>{{ t.title }}</h3><p>{{ t.text }}</p></div></div>
+      {% endfor %}
+    </div>
+    {% if achievements %}
+    <h3 class="mt-5 mb-3">Recent highlights</h3>
+    <div class="row g-4">
+      {% for item in achievements %}
+      <div class="col-md-4"><div class="tile"><p class="meta-line mb-1">{% if item.date %}<span><i class="bi bi-calendar-event" aria-hidden="true"></i>{{ item.date|date:"j F Y" }}</span>{% endif %}</p><h3><a href="{{ item.get_absolute_url }}" class="text-decoration-none">{{ item.title }}</a></h3>{% if item.summary %}<p>{{ item.summary }}</p>{% endif %}</div></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endif %}
+
+{% if site.show_gallery %}
+{# ---------------- GALLERY PREVIEW ---------------- #}
+<section class="section section--white" aria-labelledby="gal-title">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 section-head" style="max-width:none">
+      <div style="max-width:42rem">
+        <span class="eyebrow">Gallery</span>
+        <h2 id="gal-title">Life at the range.</h2>
+      </div>
+      <a href="{% url 'gallery:index' %}" class="link-arrow">Full gallery <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    {% if gallery_images %}
+    <div class="gallery-grid">
+      {% for img in gallery_images %}
+      <figure class="gallery-item"><a class="gallery-thumb" href="{% url 'gallery:index' %}" aria-label="{{ img.title }} - open gallery"><img src="{{ img.image|thumb:600 }}" alt="{{ img.alt_text }}" loading="lazy"></a></figure>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-images" aria-hidden="true"></i><h3>Photos coming soon</h3><p>Training and event photographs will appear here once uploaded by the academy.</p></div>
+    {% endif %}
+  </div>
+</section>
+
+{% endif %}
+
+{# ---------------- TESTIMONIALS (only when real ones are published) ---------------- #}
+{% if testimonials %}
+<section class="section section--white" aria-labelledby="test-title">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">Voices</span><h2 id="test-title">What our shooters and parents say.</h2></div>
+    <div class="row g-4">
+      {% for t in testimonials %}
+      <div class="col-md-6 col-lg-4">
+        <figure class="tile quote-card">
+          <i class="bi bi-quote quote-card__mark" aria-hidden="true"></i>
+          <blockquote class="mb-3">{{ t.quote }}</blockquote>
+          <figcaption class="d-flex align-items-center gap-3">
+            {% if t.photo %}<img src="{{ t.photo.url }}" alt="" class="quote-card__photo" loading="lazy">{% endif %}
+            <span><strong>{{ t.name }}</strong>{% if t.role %}<br><small class="text-secondary">{{ t.role }}</small>{% endif %}</span>
+          </figcaption>
+        </figure>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ---------------- FAQ (only when published) ---------------- #}
+{% if faqs %}
+<section class="section" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-4"><span class="eyebrow">Questions</span><h2 id="faq-title">Frequently asked questions.</h2></div>
+      <div class="col-lg-8">{% include "includes/faq_accordion.html" %}</div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if site.show_events and upcoming_events %}
+{# ---------------- EVENTS (only shown while at least one upcoming event is listed) ---------------- #}
+<section class="section" aria-labelledby="ev-title">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 section-head" style="max-width:none">
+      <div style="max-width:42rem">
+        <span class="eyebrow">Events &amp; Competitions</span>
+        <h2 id="ev-title">Upcoming on the calendar.</h2>
+      </div>
+      <a href="{% url 'events:list' %}" class="link-arrow">All events <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    <div class="row g-4">{% for event in upcoming_events %}<div class="col-lg-4">{% include "includes/event_card.html" %}</div>{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+{# ---------------- ADMISSION ---------------- #}
+{% include "includes/cta_band.html" %}
+
+{# ---------------- CONTACT & LOCATION ---------------- #}
+<section class="section" aria-labelledby="loc-title">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">Contact &amp; Location</span><h2 id="loc-title">Visit us in {{ site.city }}.</h2></div>
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="row g-3">
+          <div class="col-12"><div class="contact-card"><span class="feature__icon"><i class="bi bi-geo-alt" aria-hidden="true"></i></span><div><h3>Address</h3><p>{{ site.address }}</p></div></div></div>
+          <div class="col-sm-6 col-lg-12"><div class="contact-card"><span class="feature__icon"><i class="bi bi-telephone" aria-hidden="true"></i></span><div><h3>Phone</h3><a href="{{ site.phone_href }}">{{ site.phone }}</a></div></div></div>
+          <div class="col-sm-6 col-lg-12"><div class="contact-card"><span class="feature__icon"><i class="bi bi-envelope" aria-hidden="true"></i></span><div><h3>Email</h3><a href="mailto:{{ site.email }}">{{ site.email }}</a></div></div></div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="map-frame h-100">
+          {% if site.map_embed_url %}
+            <iframe src="{{ site.map_embed_url }}" title="Map showing {{ site.organisation_name }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          {% else %}
+            <div class="map-fallback"><div><i class="bi bi-map" style="font-size:2.2rem;color:var(--gold-deep)" aria-hidden="true"></i><p class="mt-2 mb-3">{{ site.address }}</p><a class="btn btn-rudra" href="{{ site.directions_url }}" target="_blank" rel="noopener">Open in Google Maps</a></div></div>
+          {% endif %}
+        </div>
+        <a class="link-arrow mt-3" href="{{ site.directions_url }}" target="_blank" rel="noopener">Open in Google Maps <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load rudra_tags %}
+{% block title %}Achievements | {{ site.organisation_name }}, {{ site.city }}{% endblock %}
+
+{% block content %}
+{% include "includes/page_hero.html" with title="Achievements" crumb="Achievements" eyebrow="Our focus" intro="Developing shooters from beginner to competitive level." %}
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">What we stand for</span><h2>Our areas of focus</h2>
+      <p>These are the academy's general statements about its work. They are not claims of specific medals, rankings or results.</p></div>
+    <div class="row g-4">
+      {% for t in themes %}
+      <div class="col-sm-6 col-lg-3"><div class="tile tile--accent"><span class="feature__icon"><i class="bi {{ t.icon }}" aria-hidden="true"></i></span><h3>{{ t.title }}</h3><p>{{ t.text }}</p></div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--white">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">Records</span><h2>Documented achievements</h2></div>
+    {% if page_obj %}
+    <div class="row g-4">
+      {% for item in page_obj %}
+      <div class="col-md-6 col-lg-4">
+        <article class="card-rudra">
+          {% if item.image %}<div class="card-rudra__media"><img src="{{ item.image|thumb:800 }}" alt="{{ item.image_alt }}" loading="lazy"></div>{% endif %}
+          <div class="card-rudra__body">
+            <p class="meta-line mb-2">{% if item.date %}<span><i class="bi bi-calendar-event" aria-hidden="true"></i>{{ item.date|date:"j F Y" }}</span>{% endif %}{% if item.athlete_name %}<span><i class="bi bi-person" aria-hidden="true"></i>{{ item.athlete_name }}</span>{% endif %}</p>
+            <h3><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
+            {% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
+            <div class="card-rudra__foot"><span class="link-arrow">Read details <i class="bi bi-arrow-right" aria-hidden="true"></i></span></div>
+          </div>
+        </article>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="mt-5">{% include "includes/pagination.html" %}</div>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-trophy" aria-hidden="true"></i><h3>Achievement records will be added here</h3><p>Verified results and achievements will be published once they are added by the academy.</p><a href="{% url 'events:list' %}" class="btn btn-outline-rudra">See events &amp; competitions</a></div>
+    {% endif %}
+  </div>
+</section>
+{% include "includes/cta_band.html" %}
+{% endblock %}

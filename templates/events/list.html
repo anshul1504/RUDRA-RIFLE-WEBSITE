@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Events &amp; Competitions | {{ site.organisation_name }}, {{ site.city }}{% endblock %}
+
+{% block content %}
+{% include "includes/page_hero.html" with title="Events & Competitions" crumb="Events" eyebrow="On the calendar" intro="Competitions, camps and events organised or attended by the academy." %}
+
+<section class="section" aria-labelledby="up-title" id="upcoming">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">Upcoming</span><h2 id="up-title">Upcoming events</h2></div>
+    {% if upcoming_page %}
+    <div class="row g-4">{% for event in upcoming_page %}<div class="col-lg-6">{% include "includes/event_card.html" %}</div>{% endfor %}</div>
+    <div class="mt-5">{% include "includes/pagination.html" with page_obj=upcoming_page param="upcoming" %}</div>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-calendar-event" aria-hidden="true"></i><h3>No upcoming events at the moment</h3><p>New events and competitions will be announced here. You can also contact the academy to ask about participation.</p><a href="{% url 'contact:contact' %}" class="btn btn-rudra">Contact us</a></div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section section--white" aria-labelledby="past-title" id="past">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">Archive</span><h2 id="past-title">Past events</h2></div>
+    {% if past_page %}
+    <div class="row g-4">{% for event in past_page %}<div class="col-lg-6">{% include "includes/event_card.html" %}</div>{% endfor %}</div>
+    <div class="mt-5">{% include "includes/pagination.html" with page_obj=past_page param="past" %}</div>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-clock-history" aria-hidden="true"></i><h3>No past events listed yet</h3><p>Past events will be archived here.</p></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

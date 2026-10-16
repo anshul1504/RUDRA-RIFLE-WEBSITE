@@ -1,0 +1,20 @@
+{# Clickable Instagram reel thumbnails. Each tile links to that exact reel in a new tab. Rendered only when reels are published. #}
+{% if reels %}
+<div class="reels" id="reels">
+  <ul class="reels__grid">
+    {% for r in reels %}
+    <li>
+      <a class="reel" href="{{ r.url }}" target="_blank" rel="noopener noreferrer" aria-label="Watch on Instagram: {{ r.title }} (opens in a new tab)">
+        <img src="{{ r.thumbnail.url }}" alt="{{ r.thumbnail_alt|default:r.title }}" loading="lazy" decoding="async">
+        <span class="reel__play" aria-hidden="true"><i class="bi bi-play-fill"></i></span>
+        <span class="reel__badge" aria-hidden="true"><i class="bi bi-instagram"></i> Reel</span>
+        <span class="reel__title">{{ r.title }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% if site.instagram_url %}
+  <p class="text-center mt-4 mb-0"><a class="btn btn-outline-rudra" href="{{ site.instagram_url }}" target="_blank" rel="noopener noreferrer"><i class="bi bi-instagram me-1" aria-hidden="true"></i> Follow us on Instagram</a></p>
+  {% endif %}
+</div>
+{% endif %}

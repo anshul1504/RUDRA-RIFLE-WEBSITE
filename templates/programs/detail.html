@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load rudra_tags %}
+{% block title %}{{ program.title }} | {{ site.organisation_name }}, {{ site.city }}{% endblock %}
+{% block og_title %}{{ program.title }} | {{ site.organisation_name }}{% endblock %}
+{% block og_image %}{% if program.image %}{{ SITE_URL }}{{ program.image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  {% include "includes/rings.html" %}
+  <div class="container">
+    <nav class="breadcrumb-lite" aria-label="Breadcrumb"><a href="{% url 'core:home' %}">Home</a> <span aria-hidden="true">/</span> <a href="{% url 'programs:list' %}">Training Programs</a> <span aria-hidden="true">/</span> {{ program.title }}</nav>
+    <span class="eyebrow">Training program</span>
+    <h1>{{ program.title }}</h1>
+    <p>{{ program.summary }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-7">
+        {% if program.image %}<div class="frame mb-4"><img style="object-position: {{ program.focus_css }}" src="{{ program.image|thumb:1200 }}" alt="{{ program.image_alt }}" width="1200" height="750"></div>{% endif %}
+        <div class="prose">{{ program.description|simple_markup }}</div>
+        {% with items=program.highlights.all %}
+        {% if items %}
+        <h2 class="h4 mt-5 mb-3">What the program includes</h2>
+        <ul class="check-list">{% for h in items %}<li>{{ h.text }}</li>{% endfor %}</ul>
+        {% endif %}
+        {% endwith %}
+      </div>
+      <div class="col-lg-5">
+        <aside class="form-card position-sticky" style="top:calc(var(--header-h) + 1.5rem)" aria-label="Enquire about this program">
+          <h2 class="h4 mb-3">Interested in this program?</h2>
+          {% if program.has_details %}
+          <ul class="detail-list mb-4">{% for label, value in program.detail_rows %}<li><span>{{ label }}</span><span>{{ value }}</span></li>{% endfor %}</ul>
+          {% else %}
+          <p class="small text-secondary">Fees, batch timings and eligibility are provided by the academy on enquiry.</p>
+          {% endif %}
+          {% if program.allow_booking and site.show_booking %}<a href="{% url 'bookings:slots' %}" class="btn btn-gold btn-lg w-100 mb-2"><i class="bi bi-calendar2-check me-1" aria-hidden="true"></i>Book a slot</a>{% endif %}
+          <a href="{% url 'admissions:enquiry' %}?program={{ program.slug }}" class="btn {% if program.allow_booking and site.show_booking %}btn-outline-rudra{% else %}btn-gold btn-lg{% endif %} w-100 mb-2">Enquire about this program</a>
+          <a href="{{ site.phone_href }}" class="btn btn-outline-rudra w-100"><i class="bi bi-telephone me-1" aria-hidden="true"></i> {{ site.phone }}</a>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if others %}
+<section class="section section--white">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">More programs</span><h2>Explore other programs</h2></div>
+    <div class="row g-4">{% for program in others %}<div class="col-md-6">{% include "includes/program_card.html" %}</div>{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

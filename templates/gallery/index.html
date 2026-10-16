@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load rudra_tags %}
+{% block title %}Gallery{% if active_category %} - {{ active_category.name }}{% endif %} | {{ site.organisation_name }}, {{ site.city }}{% endblock %}
+
+{% block content %}
+{% include "includes/page_hero.html" with title="Gallery" crumb="Gallery" eyebrow="In pictures" intro="Training, facilities and events at Rudra Sports Rifle Shooting Society." %}
+<section class="section">
+  <div class="container">
+    {% if images or active_category %}
+    {% if categories|length > 1 %}
+    <div class="filter-bar" role="navigation" aria-label="Filter photos by category">
+      <a class="filter-btn" href="{% url 'gallery:index' %}" {% if not active_category %}aria-current="true" aria-pressed="true"{% else %}aria-pressed="false"{% endif %}>All</a>
+      {% for c in categories %}<a class="filter-btn" href="?category={{ c.slug }}" {% if active_category == c %}aria-current="true" aria-pressed="true"{% else %}aria-pressed="false"{% endif %}>{{ c.name }}</a>{% endfor %}
+    </div>
+    {% endif %}
+    <div class="gallery-grid" id="gallery-grid">
+      {% for img in images %}
+      <figure class="gallery-item" data-category="{{ img.category.slug }}">
+        <a class="gallery-thumb" href="{{ img.image.url }}" aria-label="View larger: {{ img.title }}">
+          <img src="{{ img.image|thumb:720 }}" alt="{{ img.alt_text }}" loading="lazy">
+        </a>
+        <figcaption>{% if img.caption %}{{ img.caption }}{% else %}{{ img.title }}{% endif %}</figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+    <div class="mt-5">{% include "includes/pagination.html" %}</div>
+
+    <dialog class="lightbox" id="lightbox" aria-label="Image viewer">
+      <div class="lightbox__inner">
+        <button type="button" class="lightbox__close" aria-label="Close image viewer"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+        <div class="lightbox__stage">
+          <button type="button" class="lightbox__btn lightbox__prev" aria-label="Previous image"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
+          <img class="lightbox__img" alt="">
+          <button type="button" class="lightbox__btn lightbox__next" aria-label="Next image"><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+        </div>
+        <p class="lightbox__caption" aria-live="polite"></p>
+      </div>
+    </dialog>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-images" aria-hidden="true"></i><h3>Photos coming soon</h3><p>Training and event photographs will appear here once they have been uploaded by the academy.</p><a href="{% url 'contact:contact' %}" class="btn btn-rudra">Contact us</a></div>
+    {% endif %}
+  </div>
+</section>
+{% if reels %}
+<section class="section section--white" aria-labelledby="reels-title">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">On Instagram</span><h2 id="reels-title">Reels &amp; videos</h2></div>
+    {% include "includes/reels.html" %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

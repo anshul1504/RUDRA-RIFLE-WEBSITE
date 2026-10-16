@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Admission Enquiry | {{ site.organisation_name }}, {{ site.city }}{% endblock %}
+
+{% block content %}
+{% include "includes/page_hero.html" with title="Admission Enquiry" crumb="Admission" eyebrow="Join the academy" intro="Tell us about the applicant and the program of interest. Our team will contact you." %}
+
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        <form method="post" class="form-card enquiry-form" id="enquiryForm" novalidate data-once aria-label="Admission enquiry form">
+          {% csrf_token %}
+          {% if form.non_field_errors %}<div class="alert alert-danger" role="alert">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>{% endif %}
+          <div class="hp-field" aria-hidden="true">{{ form.contact_website.label_tag }}{{ form.contact_website }}</div>
+
+          <fieldset class="form-step">
+            <legend><span class="form-step__n">1</span> Applicant details</legend>
+            <div class="row">
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.applicant_name %}</div>
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.date_of_birth %}</div>
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.gender %}</div>
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.city %}</div>
+              <div class="col-12">{% include "includes/form_field.html" with field=form.institution %}</div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-step" id="guardianStep">
+            <legend><span class="form-step__n">2</span> Parent / guardian</legend>
+            <p class="small text-secondary guardian-note"><i class="bi bi-info-circle me-1" aria-hidden="true"></i><span id="guardianHint">Required if the applicant is under 18. Adults can leave this blank.</span></p>
+            <div class="row">
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.guardian_name req_when_minor=True %}</div>
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.guardian_mobile req_when_minor=True %}</div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-step">
+            <legend><span class="form-step__n">3</span> How can we reach you?</legend>
+            <div class="row">
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.mobile %}</div>
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.email %}</div>
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.preferred_contact %}</div>
+            </div>
+          </fieldset>
+
+          <fieldset class="form-step">
+            <legend><span class="form-step__n">4</span> Training interest</legend>
+            <div class="row">
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.program %}</div>
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.shooting_interest %}</div>
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.experience_level %}</div>
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.preferred_time %}</div>
+              <div class="col-md-6">{% include "includes/form_field.html" with field=form.how_heard %}</div>
+              <div class="col-12">{% include "includes/form_field.html" with field=form.message %}</div>
+              <div class="col-12">{% include "includes/form_field.html" with field=form.consent %}</div>
+            </div>
+          </fieldset>
+
+          <div class="d-flex flex-wrap align-items-center gap-3">
+            <button type="submit" class="btn btn-rudra btn-lg"><i class="bi bi-send me-1" aria-hidden="true"></i> Submit enquiry</button>
+            <span class="small text-secondary">Fields marked <span class="text-danger">*</span> are required. See our <a href="{% url 'core:privacy' %}">Privacy Policy</a>.</span>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="tile tile--accent h-auto mb-4">
+          <h2 class="h5 mb-3">What happens next?</h2>
+          <ol class="steps-mini">
+            <li><b>We receive your enquiry.</b><span>It reaches our team straight away.</span></li>
+            <li><b>We contact you.</b><span>In the way you prefer: call, WhatsApp or email.</span></li>
+            <li><b>You get the details.</b><span>Program information as confirmed by the academy.</span></li>
+          </ol>
+        </div>
+        <div class="tile h-auto mb-4">
+          <h2 class="h5">Prefer to talk?</h2>
+          <p class="mb-3">Call us or message us on WhatsApp.</p>
+          <a class="d-block mb-2 fw-semibold" href="{{ site.phone_href }}"><i class="bi bi-telephone me-2" aria-hidden="true"></i>{{ site.phone }}</a>
+          {% if site.whatsapp_href %}<a class="d-block mb-2 fw-semibold" href="{{ site.whatsapp_href }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-2" aria-hidden="true"></i>WhatsApp us</a>{% endif %}
+          <a class="d-block fw-semibold" href="mailto:{{ site.email }}"><i class="bi bi-envelope me-2" aria-hidden="true"></i>{{ site.email }}</a>
+          <p class="small text-secondary mt-3 mb-0">This form is an enquiry only. No payment is taken on this website. We do not ask for identity documents or medical details.</p>
+        </div>
+        <div class="tile h-auto"><h2 class="h5">Find us</h2><p class="mb-2">{{ site.address }}</p><a class="link-arrow" href="{{ site.directions_url }}" target="_blank" rel="noopener">Get directions <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if faqs %}
+<section class="section section--white" aria-labelledby="faq-title">
+  <div class="container" style="max-width:52rem">
+    <div class="section-head"><span class="eyebrow">Questions</span><h2 id="faq-title">Frequently asked questions</h2></div>
+    {% include "includes/faq_accordion.html" %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

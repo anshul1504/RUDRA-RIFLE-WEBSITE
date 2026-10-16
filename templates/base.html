@@ -1,0 +1,61 @@
+{% load static rudra_tags %}<!doctype html>
+<html lang="en-IN" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <title>{% block title %}{{ site.organisation_name }}, {{ site.city }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ meta_description|default:'Professional rifle and pistol shooting training at Rudra Sports Rifle Shooting Society, Indore, Madhya Pradesh.' }}{% endblock %}">
+  {% if meta_robots %}<meta name="robots" content="{{ meta_robots }}">{% endif %}
+  <link rel="canonical" href="{% block canonical %}{{ canonical_url }}{% endblock %}">
+  <meta name="theme-color" content="#403675">
+
+  <meta property="og:site_name" content="{{ site.organisation_name }}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{{ site.organisation_name }}, {{ site.city }}{% endblock %}">
+  <meta property="og:description" content="{{ meta_description|default:'Professional rifle and pistol shooting training in Indore.' }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:image" content="{% block og_image %}{{ SITE_URL }}{% static 'images/rudra-logo.png' %}{% endblock %}">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+  {% if announcement %}
+  <div class="announce" id="announce" data-id="{{ announcement.pk }}" role="region" aria-label="Announcement">
+    <div class="container d-flex align-items-center justify-content-center gap-3">
+      <span><i class="bi bi-megaphone me-2" aria-hidden="true"></i>{{ announcement.text }}{% if announcement.link and announcement.link_label %} <a href="{{ announcement.link }}">{{ announcement.link_label }} <i class="bi bi-arrow-right" aria-hidden="true"></i></a>{% endif %}</span>
+      <button type="button" class="announce__close" aria-label="Dismiss announcement"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  {% endif %}
+  {% include "includes/header.html" %}
+
+  {% include "includes/messages.html" %}
+  <main id="main" tabindex="-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "includes/footer.html" %}
+
+  {% if site.whatsapp_href %}
+  <a class="fab-whatsapp" href="{{ site.whatsapp_href }}" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp"><i class="bi bi-whatsapp" aria-hidden="true"></i></a>
+  {% endif %}
+
+  <button type="button" class="to-top" id="toTop" aria-label="Back to top"><i class="bi bi-arrow-up" aria-hidden="true"></i></button>
+
+  <script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

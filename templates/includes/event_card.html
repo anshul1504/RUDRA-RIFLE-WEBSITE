@@ -1,0 +1,11 @@
+<article class="event-row">
+  <div class="date-badge" aria-hidden="true"><strong>{{ event.start_at|date:"j" }}</strong><span>{{ event.start_at|date:"M Y" }}</span></div>
+  <div>
+    <h3><a href="{{ event.get_absolute_url }}">{{ event.title }}</a></h3>
+    <p class="meta-line">
+      <span><i class="bi bi-calendar-event" aria-hidden="true"></i>{{ event.start_at|date:"j F Y" }}{% if event.end_at and event.end_at.date != event.start_at.date %} &ndash; {{ event.end_at|date:"j F Y" }}{% endif %}</span>
+      {% if event.location %}<span><i class="bi bi-geo-alt" aria-hidden="true"></i>{{ event.location }}</span>{% endif %}
+    </p>
+    {% if event.summary %}<p class="mt-2 mb-0 small text-secondary">{{ event.summary }}</p>{% endif %}
+  </div>
+</article>

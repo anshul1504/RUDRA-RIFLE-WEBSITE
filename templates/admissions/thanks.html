@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Enquiry received | {{ site.organisation_name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container text-center" style="max-width:40rem">
+    <i class="bi bi-check-circle" style="font-size:3.5rem;color:var(--gold-deep)" aria-hidden="true"></i>
+    <h1 class="h2 mt-3">Dhanyavad! Your enquiry has been received.</h1>
+    <p class="lead mx-auto">Our team will contact you soon in your preferred way. If it is urgent, please call <a href="{{ site.phone_href }}">{{ site.phone }}</a>.</p>
+    <div class="d-flex gap-2 justify-content-center flex-wrap mt-4">
+      <a href="{% url 'core:home' %}" class="btn btn-rudra">Back to home</a>
+      <a href="{% url 'programs:list' %}" class="btn btn-outline-rudra">Explore programs</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

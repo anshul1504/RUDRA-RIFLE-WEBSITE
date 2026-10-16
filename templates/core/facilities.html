@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load rudra_tags %}
+{% block title %}Facilities | {{ site.organisation_name }}, {{ site.city }}{% endblock %}
+
+{% block content %}
+{% include "includes/page_hero.html" with title="Facilities" crumb="Facilities" eyebrow="Training environment" intro="The facilities and coaching support offered by the academy, as stated in its own description." %}
+
+<section class="section">
+  <div class="container">
+    {% if facilities %}
+    <div class="row g-4">
+      {% for f in facilities %}
+      <div class="col-md-6 col-lg-4">
+        <div class="tile tile--accent">
+          {% if f.image %}<img src="{{ f.image|thumb:700 }}" alt="{{ f.image_alt }}" loading="lazy" class="rounded mb-3 w-100" style="aspect-ratio:16/10;object-fit:cover">{% endif %}
+          <span class="feature__icon"><i class="bi {{ f.icon }}" aria-hidden="true"></i></span>
+          <h3>{{ f.title }}</h3>
+          {% if f.description %}<p>{{ f.description }}</p>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-buildings" aria-hidden="true"></i><h3>Facility details coming soon</h3><p>Please contact the academy for information about the training facilities.</p><a href="{% url 'contact:contact' %}" class="btn btn-rudra">Contact us</a></div>
+    {% endif %}
+    <p class="small text-secondary mt-4">Facility and coaching information on this page is supplied by Rudra Sports Rifle Shooting Society and has not been independently verified. Please contact the academy to confirm details.</p>
+  </div>
+</section>
+
+<section class="section section--indigo">
+  <div class="container"><div class="row"><div class="col-lg-8">
+    <span class="eyebrow">Safety First</span>
+    <h2 class="mb-3">Supervised, responsible practice.</h2>
+    <p class="lead">{{ site.safety_text }}</p>
+  </div></div></div>
+</section>
+{% include "includes/cta_band.html" %}
+{% endblock %}

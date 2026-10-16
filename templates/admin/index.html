@@ -1,0 +1,52 @@
+{% extends "admin/index.html" %}
+{# Adds the Rudra Sports dashboard widgets above Jazzmin's app list. Context comes from apps.core.context_processors.admin_dashboard. #}
+{% block content %}
+{% if kpis %}
+<div class="col-12">
+  <div class="row">
+    {% for k in kpis %}
+    <div class="col-6 col-lg-3">
+      <a href="{{ k.url }}" class="rs-kpi {% if k.hot %}rs-kpi--hot{% endif %}">
+        <span class="rs-kpi__icon"><i class="fas {{ k.fa }}"></i></span>
+        <span><b>{{ k.value }}</b><small>{{ k.title }}</small></span>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="col-12">
+  <div class="card">
+    <div class="card-header"><h5 class="m-0">Quick actions</h5></div>
+    <div class="card-body">
+      {% for label, fa, url in quick_links %}<a class="btn btn-outline-primary mr-2 mb-2" href="{{ url }}"><i class="fas {{ fa }} mr-1"></i> {{ label }}</a>{% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="col-12">
+  <div class="row">
+    {% if todays_slots %}
+    <div class="col-lg-4"><div class="card"><div class="card-header"><h5 class="m-0">Today's slots</h5></div>
+      <div class="card-body p-0"><table class="table table-sm mb-0"><thead><tr><th>Time</th><th>Slot</th><th>Booked</th></tr></thead><tbody>
+        {% for s in todays_slots %}<tr><td>{{ s.start_time|time:"h:i A" }}</td><td><a href="{% url 'admin:bookings_slot_change' s.pk %}">{{ s.title|default:"Practice slot" }}</a></td><td>{{ s.booked }} / {{ s.capacity }}</td></tr>{% endfor %}
+      </tbody></table></div></div></div>
+    {% endif %}
+    {% if recent_bookings %}
+    <div class="col-lg-4"><div class="card"><div class="card-header"><h5 class="m-0">Latest slot bookings</h5></div>
+      <div class="card-body p-0"><table class="table table-sm mb-0"><thead><tr><th>Ref</th><th>Name</th><th>Status</th></tr></thead><tbody>
+        {% for b in recent_bookings %}<tr><td><a href="{% url 'admin:bookings_slotbooking_change' b.pk %}">{{ b.reference }}</a></td><td>{{ b.name }}</td><td>{{ b.get_status_display }}</td></tr>{% endfor %}
+      </tbody></table></div></div></div>
+    {% endif %}
+    {% if recent_enquiries %}
+    <div class="col-lg-4"><div class="card"><div class="card-header"><h5 class="m-0">Latest admission enquiries</h5></div>
+      <div class="card-body p-0"><table class="table table-sm mb-0"><thead><tr><th>Name</th><th>Mobile</th><th>Status</th></tr></thead><tbody>
+        {% for e in recent_enquiries %}<tr><td><a href="{% url 'admin:admissions_admissionenquiry_change' e.pk %}">{{ e.applicant_name }}</a></td><td>{{ e.mobile }}</td><td>{{ e.get_status_display }}</td></tr>{% endfor %}
+      </tbody></table></div></div></div>
+    {% endif %}
+  </div>
+</div>
+
+{{ block.super }}
+{% endblock %}

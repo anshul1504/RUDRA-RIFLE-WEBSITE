@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Page not found | {{ site.organisation_name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container text-center" style="max-width:42rem">
+    <div class="error-code" aria-hidden="true">4<span>0</span>4</div>
+    <h1 class="h2 mt-3">We could not find that page.</h1>
+    <p class="lead mx-auto">The link may be broken or the page may have moved. Try one of these instead.</p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center mt-4">
+      <a href="{% url 'core:home' %}" class="btn btn-rudra">Back to home</a>
+      <a href="{% url 'programs:list' %}" class="btn btn-outline-rudra">Training programs</a>
+      <a href="{% url 'contact:contact' %}" class="btn btn-outline-rudra">Contact us</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

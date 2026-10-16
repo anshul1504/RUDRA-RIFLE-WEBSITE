@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Contact Us | {{ site.organisation_name }}, {{ site.city }}{% endblock %}
+{% block extra_head %}{% include "includes/org_jsonld.html" %}{% endblock %}
+
+{% block content %}
+{# ================= BANNER ================= #}
+<section class="cx-hero {% if site.contact_image %}has-photo{% endif %}">
+  {% if site.contact_image %}<img class="cx-hero__img" src="{{ site.contact_image.url }}" alt="{{ site.contact_image_alt }}" fetchpriority="high">{% else %}{% include "includes/rings.html" %}{% endif %}
+  <div class="container position-relative">
+    <nav class="breadcrumb-lite" aria-label="Breadcrumb"><a href="{% url 'core:home' %}">Home</a> <span aria-hidden="true">/</span> Contact</nav>
+    <span class="eyebrow">Get in touch</span>
+    <h1>Let&rsquo;s talk about your shooting journey.</h1>
+    <p>Questions about training, admission or events? Reach out in the way that suits you. We would be glad to hear from you.</p>
+  </div>
+</section>
+
+{# ================= CONTACT DECK (overlaps the banner) ================= #}
+<section class="cx-deck-wrap">
+  <div class="container">
+    <div class="cx-deck">
+      <aside class="cx-aside" aria-label="Contact details">
+        {% include "includes/rings.html" %}
+        <h2>Contact details</h2>
+        <p class="cx-aside__lead">{{ site.organisation_name }}, {{ site.city }}</p>
+        <ul class="cx-list">
+          <li><span class="cx-ico"><i class="bi bi-geo-alt" aria-hidden="true"></i></span><div><small>Address</small><address>{{ site.address }}</address></div></li>
+          <li><span class="cx-ico"><i class="bi bi-telephone" aria-hidden="true"></i></span><div><small>Phone</small><a href="{{ site.phone_href }}">{{ site.phone }}</a></div></li>
+          <li><span class="cx-ico"><i class="bi bi-envelope" aria-hidden="true"></i></span><div><small>Email</small><a href="mailto:{{ site.email }}">{{ site.email }}</a></div></li>
+          {% if site.whatsapp_href %}<li><span class="cx-ico"><i class="bi bi-whatsapp" aria-hidden="true"></i></span><div><small>WhatsApp</small><a href="{{ site.whatsapp_href }}" target="_blank" rel="noopener">Chat with us</a></div></li>{% endif %}
+          {% if site.opening_hours %}<li><span class="cx-ico"><i class="bi bi-clock" aria-hidden="true"></i></span><div><small>Hours</small><span>{{ site.opening_hours }}</span></div></li>{% endif %}
+        </ul>
+        {% if site.social_links %}
+        <div class="social-links cx-social">{% for s in site.social_links %}<a href="{{ s.url }}" target="_blank" rel="noopener" aria-label="{{ s.label }}"><i class="bi {{ s.icon }}" aria-hidden="true"></i></a>{% endfor %}</div>
+        {% endif %}
+        <p class="cx-aside__note"><i class="bi bi-person-plus" aria-hidden="true"></i> Looking to join? <a href="{% url 'admissions:enquiry' %}">Send an admission enquiry</a>.</p>
+        <a href="{{ site.directions_url }}" class="btn btn-gold w-100 mt-auto" target="_blank" rel="noopener"><i class="bi bi-sign-turn-right me-1" aria-hidden="true"></i> Get directions</a>
+      </aside>
+
+      <div class="cx-form">
+        <h2>Send us a message</h2>
+        <p class="text-secondary">Choose a topic or write your own. Fields marked <span class="text-danger">*</span> are required.</p>
+        <div class="cx-topics" role="group" aria-label="Quick topics">
+          <button type="button" data-topic="Admission enquiry"><i class="bi bi-person-plus" aria-hidden="true"></i> Admission</button>
+          <button type="button" data-topic="Pay and Play slot booking"><i class="bi bi-calendar2-check" aria-hidden="true"></i> Pay and Play</button>
+          <button type="button" data-topic="Events and competitions"><i class="bi bi-calendar-event" aria-hidden="true"></i> Events</button>
+          <button type="button" data-topic="General question"><i class="bi bi-chat-dots" aria-hidden="true"></i> Something else</button>
+        </div>
+        <form method="post" novalidate data-once aria-label="Contact form">
+          {% csrf_token %}
+          {% if form.non_field_errors %}<div class="alert alert-danger" role="alert">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>{% endif %}
+          <div class="hp-field" aria-hidden="true">{{ form.contact_website.label_tag }}{{ form.contact_website }}</div>
+          <div class="row">
+            <div class="col-md-6">{% include "includes/form_field.html" with field=form.name %}</div>
+            <div class="col-md-6">{% include "includes/form_field.html" with field=form.email %}</div>
+            <div class="col-md-6">{% include "includes/form_field.html" with field=form.phone %}</div>
+            <div class="col-md-6">{% include "includes/form_field.html" with field=form.subject %}</div>
+            <div class="col-12">{% include "includes/form_field.html" with field=form.message %}</div>
+            <div class="col-12">{% include "includes/form_field.html" with field=form.consent %}</div>
+          </div>
+          <button type="submit" class="btn btn-rudra btn-lg"><i class="bi bi-send me-1" aria-hidden="true"></i> Send message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ================= QUICK WAYS ================= #}
+<section class="section pb-0" aria-labelledby="ways-title">
+  <div class="container">
+    <div class="section-head text-center mx-auto"><span class="eyebrow justify-content-center">Quick ways to reach us</span><h2 id="ways-title">Prefer another way?</h2></div>
+    <div class="row g-4">
+      <div class="col-md-4"><a class="cx-way" href="{{ site.phone_href }}"><i class="bi bi-telephone-outbound" aria-hidden="true"></i><h3>Call us</h3><p>Speak to the team directly.</p><span>{{ site.phone }} <i class="bi bi-arrow-right" aria-hidden="true"></i></span></a></div>
+      <div class="col-md-4">{% if site.whatsapp_href %}<a class="cx-way" href="{{ site.whatsapp_href }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp" aria-hidden="true"></i><h3>WhatsApp</h3><p>Send a quick message anytime.</p><span>Start a chat <i class="bi bi-arrow-right" aria-hidden="true"></i></span></a>{% else %}<a class="cx-way" href="mailto:{{ site.email }}"><i class="bi bi-envelope-paper" aria-hidden="true"></i><h3>Email</h3><p>Write to us in detail.</p><span>{{ site.email }} <i class="bi bi-arrow-right" aria-hidden="true"></i></span></a>{% endif %}</div>
+      <div class="col-md-4"><a class="cx-way" href="{% url 'admissions:enquiry' %}"><i class="bi bi-journal-check" aria-hidden="true"></i><h3>Admission enquiry</h3><p>Ready to join? Share a few details.</p><span>Enquire now <i class="bi bi-arrow-right" aria-hidden="true"></i></span></a></div>
+    </div>
+  </div>
+</section>
+
+{# ================= MAP ================= #}
+<section class="section" aria-label="Map and location">
+  <div class="container">
+    {% if site.map_embed_url %}
+    <div class="cx-map">
+      <iframe src="{{ site.map_embed_url }}" title="Map showing {{ site.organisation_name }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <div class="cx-map__card">
+        <span class="eyebrow">Find us</span>
+        <h3>{{ site.organisation_name }}</h3>
+        <address>{{ site.address }}</address>
+        <a href="{{ site.directions_url }}" class="btn btn-rudra btn-sm" target="_blank" rel="noopener">Open in Google Maps <i class="bi bi-arrow-up-right ms-1" aria-hidden="true"></i></a>
+      </div>
+    </div>
+    {% else %}
+    <div class="cx-map cx-map--static">
+      <i class="bi bi-geo-alt-fill cx-map__pin" aria-hidden="true"></i>
+      <div class="cx-map__card">
+        <span class="eyebrow justify-content-center">Find us</span>
+        <h3>{{ site.organisation_name }}</h3>
+        <address>{{ site.address }}</address>
+        <a href="{{ site.directions_url }}" class="btn btn-rudra" target="_blank" rel="noopener">Open in Google Maps <i class="bi bi-arrow-up-right ms-1" aria-hidden="true"></i></a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% if faqs %}
+<section class="section section--white" aria-labelledby="faq-title">
+  <div class="container" style="max-width:52rem">
+    <div class="section-head"><span class="eyebrow">Questions</span><h2 id="faq-title">Frequently asked questions</h2></div>
+    {% include "includes/faq_accordion.html" %}
+  </div>
+</section>
+{% endif %}
+
+{% include "includes/cta_band.html" %}
+{% endblock %}

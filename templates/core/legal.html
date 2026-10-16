@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load rudra_tags %}
+{% block title %}{{ page.title }} | {{ site.organisation_name }}{% endblock %}
+
+{% block content %}
+{% include "includes/page_hero.html" with title=page.title crumb=page.title eyebrow="Legal" intro="" %}
+<section class="section">
+  <div class="container">
+    {% if not page.last_reviewed %}
+    <div class="draft-banner" role="note"><strong>Draft:</strong> this page has not yet been reviewed or confirmed by the academy or a legal adviser.</div>
+    {% endif %}
+    <div class="prose">{{ page.body|simple_markup }}</div>
+    <p class="small text-secondary mt-5">{% if page.last_reviewed %}Last reviewed: {{ page.last_reviewed|date:"j F Y" }}.{% else %}Last reviewed: not yet confirmed.{% endif %} Last edited: {{ page.updated_at|date:"j F Y" }}.</p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Book a Slot | Pay and Play | {{ site.organisation_name }}, {{ site.city }}{% endblock %}
+
+{% block content %}
+{% include "includes/page_hero.html" with title="Book a Slot" crumb="Book a Slot" eyebrow="Pay and Play" intro=site.booking_intro %}
+
+<section class="section">
+  <div class="container">
+    {% if site.booking_payment_note %}<div class="draft-banner" role="note"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>{{ site.booking_payment_note }}</div>{% endif %}
+    {% if days %}
+      {% for day in days %}
+      <div class="row g-3 mb-4 pb-4 border-bottom">
+        <div class="col-lg-3"><h2 class="h5 mb-0"><i class="bi bi-calendar-event me-2" style="color:var(--gold-deep)" aria-hidden="true"></i>{{ day.date|date:"l" }}<br><span class="text-secondary fw-normal fs-6">{{ day.date|date:"j F Y" }}</span></h2></div>
+        <div class="col-lg-9"><div class="row g-3">
+          {% for slot in day.slots %}
+          <div class="col-md-6">
+            <article class="event-row" style="align-items:center">
+              <div class="date-badge" aria-hidden="true" style="min-width:5.2rem"><strong style="font-size:1.05rem">{{ slot.start_time|time:"g:i" }}</strong><span>{{ slot.start_time|time:"A" }}</span></div>
+              <div class="flex-grow-1">
+                <h3 class="h6 mb-1">{{ slot.title|default:"Practice slot" }}{% if slot.program %} <small class="text-secondary">&middot; {{ slot.program.title }}</small>{% endif %}</h3>
+                <p class="meta-line">
+                  <span><i class="bi bi-clock" aria-hidden="true"></i>{{ slot.start_time|time:"g:i A" }} &ndash; {{ slot.end_time|time:"g:i A" }}</span>
+                  {% if slot.price_note %}<span><i class="bi bi-tag" aria-hidden="true"></i>{{ slot.price_note }}</span>{% endif %}
+                </p>
+                {% if slot.notes %}<p class="small text-secondary mb-1">{{ slot.notes }}</p>{% endif %}
+                {% if slot.is_full %}
+                  <span class="badge text-bg-secondary mt-1">Full</span>
+                {% else %}
+                  <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                    <a href="{% url 'bookings:book' slot.pk %}" class="btn btn-rudra btn-sm">Book this slot</a>
+                    <span class="small text-secondary">{{ slot.seats_left }} seat{{ slot.seats_left|pluralize }} left</span>
+                  </div>
+                {% endif %}
+              </div>
+            </article>
+          </div>
+          {% endfor %}
+        </div></div>
+      </div>
+      {% endfor %}
+      <div class="mt-4">{% include "includes/pagination.html" %}</div>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-calendar2-x" aria-hidden="true"></i><h3>No slots are open right now</h3><p>New practice slots are added regularly. Please check back soon, or contact the academy to arrange a session.</p><a href="{% url 'contact:contact' %}" class="btn btn-rudra">Contact us</a></div>
+    {% endif %}
+    <p class="small text-secondary">A booking is a request until the academy confirms it with you. Slots are supervised sessions at the range.</p>
+  </div>
+</section>
+{% endblock %}
