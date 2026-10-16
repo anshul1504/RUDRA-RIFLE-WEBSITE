@@ -1,3 +1,5 @@
+import random
+
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_GET
@@ -19,12 +21,20 @@ def items(kind):
 class HomeView(TemplateView):
     template_name = "core/home.html"
 
+    @staticmethod
+    def gallery_preview():
+        """A shuffled, always-full grid: 12 photos (fits 2, 3 and 4 columns); fewer photos are trimmed to full rows of 4."""
+        photos = list(GalleryImage.objects.filter(is_published=True).select_related("category"))
+        random.shuffle(photos)
+        keep = 12 if len(photos) >= 12 else len(photos) // 4 * 4 or len(photos)
+        return photos[:keep]
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx.update(
             programs=Program.objects.filter(is_published=True).prefetch_related("highlights")[:4],
             facilities=Facility.objects.filter(is_published=True)[:6],
-            gallery_images=GalleryImage.objects.filter(is_published=True).select_related("category")[:6],
+            gallery_images=self.gallery_preview(),
             upcoming_events=Event.objects.upcoming()[:3],
             achievements=Achievement.objects.filter(is_published=True)[:3],
             slides=HeroSlide.objects.filter(is_published=True),

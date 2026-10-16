@@ -16,6 +16,6 @@
     </ul>
     {% endif %}
     {% endwith %}
-    <div class="card-rudra__foot">{% if program.allow_booking and site.show_booking %}<span class="badge text-bg-warning mb-2 d-inline-block"><i class="bi bi-calendar2-check me-1" aria-hidden="true"></i>Slot booking available</span>{% endif %}</div>
+    <div class="card-rudra__foot">{% if program.allow_booking and site.show_booking %}<a href="{% url 'bookings:slots' %}" class="btn btn-rudra btn-sm card-rudra__book"><i class="bi bi-calendar2-check me-1" aria-hidden="true"></i>Book a Slot</a>{% endif %}</div>
   </div>
 </article>

@@ -257,7 +257,7 @@
       <a href="{% url 'gallery:index' %}" class="link-arrow">Full gallery <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
     </div>
     {% if gallery_images %}
-    <div class="gallery-grid">
+    <div class="gallery-grid gallery-grid--home">
       {% for img in gallery_images %}
       <figure class="gallery-item"><a class="gallery-thumb" href="{% url 'gallery:index' %}" aria-label="{{ img.title }} - open gallery"><img src="{{ img.image|thumb:600 }}" alt="{{ img.alt_text }}" loading="lazy"></a></figure>
       {% endfor %}

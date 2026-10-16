@@ -636,3 +636,9 @@ main { animation: pageIn .5s ease both; }
 @media (max-width: 359.98px) { .nav-cta-mobile { padding: .45rem .6rem; font-size: .78rem; } .brand-logo { height: 44px; } }
 @media (max-width: 359.98px) { .hero-controls .container { gap: .5rem !important; } .hero-indicators { gap: .2rem; } .hero-indicators button { width: 1.5rem; } .hero-btn { width: 2.2rem; height: 2.2rem; } .hero-controls .d-flex.gap-2 { gap: .35rem !important; } }
 .card-rudra__foot:empty { display: none; }
+
+/* homepage gallery preview: fixed columns so the last row is always full (12 photos = 2/3/4 columns) */
+.gallery-grid--home { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 576px) { .gallery-grid--home { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 992px) { .gallery-grid--home { grid-template-columns: repeat(4, 1fr); } }
+.card-rudra__book { position: relative; z-index: 2; }  /* sits above the card's stretched link */
