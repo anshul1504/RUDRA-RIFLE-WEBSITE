@@ -440,3 +440,10 @@ class MobileHeaderAndPhotoFocusTests(BaseTest):
         self.assertContains(self.client.get(pnp.get_absolute_url()), 'style="object-position: 50% 0%"')
         beginner = Program.objects.get(slug="beginner-shooting-program")
         self.assertEqual(beginner.focus_css, "50% 50%")  # other programs unchanged
+
+
+class StaticStorageTests(BaseTest):
+    def test_manifest_storage_tolerates_directory_references(self):
+        from config.storage import RelaxedManifestStorage
+
+        self.assertFalse(RelaxedManifestStorage.manifest_strict)  # jazzmin asks for {% static 'vendor/bootswatch' %}
