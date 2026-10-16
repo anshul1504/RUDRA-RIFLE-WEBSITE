@@ -642,3 +642,8 @@ main { animation: pageIn .5s ease both; }
 @media (min-width: 576px) { .gallery-grid--home { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 992px) { .gallery-grid--home { grid-template-columns: repeat(4, 1fr); } }
 .card-rudra__book { position: relative; z-index: 2; }  /* sits above the card's stretched link */
+
+/* slot booking filters */
+.slot-filters { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 2rem; }
+.slot-filters__quick { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.slot-filters .form-label { font-size: .85rem; font-weight: 600; color: var(--indigo); margin-bottom: .25rem; }

@@ -316,7 +316,7 @@ class DateFilterTests(TestCase):
         page = self.client.get(reverse("bookings:slots"), {"date": b.date.isoformat()})
         self.assertContains(page, "Day two")
         self.assertNotContains(page, "Day one")
-        self.assertContains(self.client.get(reverse("bookings:slots")), "All days")
+        self.assertContains(self.client.get(reverse("bookings:slots")), "Apply filters")
 
     def test_bad_date_is_ignored_and_days_ahead_setting_used(self):
         make_slot(1, title="Day one")
@@ -325,3 +325,11 @@ class DateFilterTests(TestCase):
         SlotSchedule.objects.create(weekday=0, start_time=time(9), end_time=time(10), capacity=2)
         self.client.get(reverse("bookings:slots"))
         self.assertTrue(Slot.objects.filter(start_time=time(9)).count() <= 1)
+
+    def test_time_of_day_seats_and_empty_filter(self):
+        a = make_slot(1, title="Early")  # 06:00 helper slot
+        url = reverse("bookings:slots")
+        self.assertContains(self.client.get(url, {"time": "morning"}), "Early")
+        self.assertContains(self.client.get(url, {"time": "evening"}), "No slots match these filters")
+        self.assertContains(self.client.get(url, {"seats": "1", "program": "999"}), "No slots match these filters")
+        self.assertContains(self.client.get(url, {"time": "bogus", "date": "x"}), "Early")

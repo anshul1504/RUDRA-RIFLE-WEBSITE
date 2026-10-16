@@ -8,12 +8,24 @@
   <div class="container">
     {% if site.booking_payment_note %}<div class="draft-banner" role="note"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>{{ site.booking_payment_note }}</div>{% endif %}
     {% if site.opening_hours %}<p class="mb-4"><i class="bi bi-clock me-1" style="color:var(--gold-deep)" aria-hidden="true"></i><strong>Range timing:</strong> {{ site.opening_hours }}</p>{% endif %}
-    {% if date_chips|length > 1 or selected_date %}
-    <div class="filter-bar" role="navigation" aria-label="Choose a date">
-      <a class="filter-btn" href="{% url 'bookings:slots' %}" {% if not selected_date %}aria-current="true" aria-pressed="true"{% else %}aria-pressed="false"{% endif %}>All days</a>
-      {% for d in date_chips %}<a class="filter-btn" href="?date={{ d|date:'Y-m-d' }}" {% if selected_date == d %}aria-current="true" aria-pressed="true"{% else %}aria-pressed="false"{% endif %}>{{ d|date:"D, j M" }}</a>{% endfor %}
-    </div>
-    {% endif %}
+    <form class="slot-filters" method="get" action="{% url 'bookings:slots' %}" id="slot-filters" aria-label="Filter slots">
+      <div class="slot-filters__quick" role="group" aria-label="Quick dates">
+        <a class="filter-btn" href="{% url 'bookings:slots' %}" aria-pressed="{% if not filtered %}true{% else %}false{% endif %}">All slots</a>
+        <a class="filter-btn" href="?date={{ today|date:'Y-m-d' }}" aria-pressed="{% if selected_date == today %}true{% else %}false{% endif %}">Today</a>
+        <a class="filter-btn" href="?date={{ tomorrow|date:'Y-m-d' }}" aria-pressed="{% if selected_date == tomorrow %}true{% else %}false{% endif %}">Tomorrow</a>
+      </div>
+      <div class="row g-3 align-items-end">
+        <div class="col-sm-6 col-lg-3"><label class="form-label" for="f-date">Date</label>
+          <input class="form-control" type="date" id="f-date" name="date" value="{{ selected_date|date:'Y-m-d' }}" min="{{ min_date|date:'Y-m-d' }}" max="{{ max_date|date:'Y-m-d' }}"></div>
+        <div class="col-sm-6 col-lg-3"><label class="form-label" for="f-time">Time of day</label>
+          <select class="form-select" id="f-time" name="time"><option value="">Any time</option>{% for key, label in periods %}<option value="{{ key }}" {% if period == key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+        {% if programs %}<div class="col-sm-6 col-lg-3"><label class="form-label" for="f-program">Program</label>
+          <select class="form-select" id="f-program" name="program"><option value="">All programs</option>{% for p in programs %}<option value="{{ p.pk }}" {% if program_id == p.pk|stringformat:'s' %}selected{% endif %}>{{ p.title }}</option>{% endfor %}</select></div>{% endif %}
+        <div class="col-sm-6 col-lg-3"><div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="f-seats" name="seats" value="1" {% if seats_only %}checked{% endif %}><label class="form-check-label" for="f-seats">Only slots with seats left</label></div>
+          <div class="d-flex gap-2"><button type="submit" class="btn btn-rudra btn-sm">Apply filters</button>{% if filtered %}<a href="{% url 'bookings:slots' %}" class="btn btn-outline-rudra btn-sm">Reset</a>{% endif %}</div></div>
+      </div>
+      <p class="small text-secondary mb-0 mt-3" aria-live="polite">{{ slot_count }} slot{{ slot_count|pluralize }} {% if filtered %}match your filters{% else %}available{% endif %}.</p>
+    </form>
     {% if days %}
       {% for day in days %}
       <div class="row g-3 mb-4 pb-4 border-bottom">
@@ -47,9 +59,16 @@
       {% endfor %}
       <div class="mt-4">{% include "includes/pagination.html" %}</div>
     {% else %}
-    <div class="empty-state"><i class="bi bi-calendar2-x" aria-hidden="true"></i><h3>No slots are open right now</h3><p>New practice slots are added regularly. Please check back soon, or contact the academy to arrange a session.</p><a href="{% url 'contact:contact' %}" class="btn btn-rudra">Contact us</a></div>
+    <div class="empty-state"><i class="bi bi-calendar2-x" aria-hidden="true"></i><h3>{% if filtered %}No slots match these filters{% else %}No slots are open right now{% endif %}</h3><p>{% if filtered %}Try another date or time. The range is closed on Fridays.{% else %}New practice slots are added regularly. Please check back soon, or contact the academy to arrange a session.{% endif %}</p>{% if filtered %}<a href="{% url 'bookings:slots' %}" class="btn btn-outline-rudra me-2">Clear filters</a>{% endif %}<a href="{% url 'contact:contact' %}" class="btn btn-rudra">Contact us</a></div>
     {% endif %}
     <p class="small text-secondary">A booking is a request until the academy confirms it with you. Slots are supervised sessions at the range.</p>
   </div>
 </section>
 {% endblock %}
+{% block extra_js %}{{ block.super }}<script>
+  (function () {
+    var f = document.getElementById("slot-filters");
+    if (!f) return;
+    f.querySelectorAll("input, select").forEach(function (el) { el.addEventListener("change", function () { f.submit(); }); });
+  })();
+</script>{% endblock %}
