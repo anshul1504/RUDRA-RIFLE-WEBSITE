@@ -36,6 +36,7 @@ class SeedTests(TestCase):
 class PublicBookingTests(TestCase):
     def setUp(self):
         cache.clear()
+        SlotSchedule.objects.all().delete()  # drop the seeded weekly pattern so tests control the slots
 
     def test_empty_state(self):
         self.assertContains(self.client.get(reverse("bookings:slots")), "No slots are open right now")
@@ -288,3 +289,18 @@ class EnquiryAdminTests(TestCase):
         e.refresh_from_db()
         self.assertEqual(e.status, "new")
         self.assertEqual(self.client.get("/admin/admissions/admissionenquiry/?created_at__gte=2020-01-01").status_code, 200)
+
+
+class RangeTimingTests(TestCase):
+    def test_seeded_schedule_skips_friday_and_covers_10_to_5(self):
+        days = set(SlotSchedule.objects.values_list("weekday", flat=True))
+        self.assertEqual(days, {0, 1, 2, 3, 5, 6})
+        first = SlotSchedule.objects.order_by("start_time").first()
+        last = SlotSchedule.objects.order_by("-end_time").first()
+        self.assertEqual((first.start_time, last.end_time), (time(10), time(17)))
+
+    def test_page_shows_timing_and_creates_slots(self):
+        cache.clear()
+        resp = self.client.get(reverse("bookings:slots"))
+        self.assertContains(resp, "10:00 am to 5:00 pm daily. Friday: Holiday.")
+        self.assertFalse(Slot.objects.filter(date__week_day=6).exists())  # Django: 6 = Friday

@@ -113,9 +113,8 @@ class PublicPagesTests(BaseTest):
             self.assertNotContains(r, other)
         self.assertContains(r, "https://wa.me/919425093128")
         self.assertContains(r, "Pitra Parvat")
-        # No invented social links or hours
-        self.assertNotContains(r, "facebook.com")
-        self.assertNotContains(r, "bi-clock")
+        self.assertNotContains(r, "facebook.com")  # no invented social links
+        self.assertContains(r, "10:00 am to 5:00 pm daily. Friday: Holiday.")
 
     def test_social_links_only_when_set(self):
         s = SiteSettings.load()

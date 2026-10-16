@@ -8,13 +8,15 @@ from django.shortcuts import get_object_or_404, redirect, render
 from apps.core.utils import acknowledge, notify_staff, page_enabled, paginate, throttled
 
 from .forms import SeatsUnavailable, SlotBookingForm
-from .models import Slot, SlotBooking
+from .models import Slot, SlotBooking, SlotSchedule
 
 logger = logging.getLogger(__name__)
 
 
 @page_enabled("show_booking")
 def slot_list(request):
+    for schedule in SlotSchedule.objects.filter(is_active=True):
+        schedule.generate(14)  # keep the next two weeks of dated slots available
     slots = list(Slot.objects.open_for_booking().with_booked())
     slots = [s for s in slots if not s.is_past]
     all_days = [{"date": d, "slots": list(items)} for d, items in groupby(slots, key=lambda s: s.date)]
