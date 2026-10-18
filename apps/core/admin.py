@@ -31,7 +31,7 @@ def export_csv(modeladmin, request, queryset):
     return response
 
 
-TONES = {"info": ("#6b3505", "#ffffff"), "warning": ("#f0a73a", "#24232B"), "success": ("#2e7d32", "#ffffff"),
+TONES = {"info": ("#4d3818", "#ffffff"), "warning": ("#d9ae4a", "#24232B"), "success": ("#2e7d32", "#ffffff"),
          "danger": ("#b3261e", "#ffffff"), "muted": ("#e5e3ee", "#24232B")}
 
 
