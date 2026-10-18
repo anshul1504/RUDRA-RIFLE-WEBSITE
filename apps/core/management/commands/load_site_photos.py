@@ -35,6 +35,12 @@ GALLERY = {
     "inauguration-group": ("The academy team and guests", "Group photograph at the inauguration",
                            "Guests and the academy team standing together in front of the Rudra Sports banner", "Events"),
     # ---- remaining photos
+    "range-firing-line": ("The firing line", "Six numbered lanes facing the targets",
+                          "The firing line with six numbered lanes, air rifles on the counter and the Rudra Sports target wall behind", "Range & Facilities"),
+    "inauguration-equipment-table": ("Guests at the equipment table", "Well-wishers behind the rifles on opening day",
+                                     "Guests standing together behind a table of air rifles, tools and flowers at the academy", "Events"),
+    "range-registration-desk": ("Registration desk", "The front desk at the academy",
+                                "A staff member at the Rudra Sports registration desk, decorated with flowers and balloons", "Range & Facilities"),
     "inauguration-felicitation": ("Inauguration ceremony: felicitation", "Guests exchanging a memento at the inauguration",
                                   "Seven guests standing together as a memento is presented in front of the Rudra Sports banner", "Events"),
     "training-coach-pistol": ("Coach guiding a student", "Pistol stance demonstration at the range",
@@ -64,7 +70,7 @@ RETIRED = ["inauguration-memento"]  # replaced by a better frame of the same mom
 
 # homepage carousel, in slide order
 SLIDES = [
-    ("range-olympic-rings", "The academy's range hall with Olympic rings painted on the wall"),
+    ("range-firing-line", "The firing line with six numbered lanes, air rifles on the counter and the Rudra Sports target wall behind"),
     ("training-class-seated", "School students seated on the floor listening to a coach in front of the firing line"),
     ("range-lanes", "An empty firing line with numbered lanes and the Rudra Sports banner on the wall"),
     ("training-students-line", "School students in uniform standing in a line inside the range hall"),

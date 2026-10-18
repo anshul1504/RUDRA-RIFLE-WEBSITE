@@ -447,3 +447,31 @@ class StaticStorageTests(BaseTest):
         from config.storage import RelaxedManifestStorage
 
         self.assertFalse(RelaxedManifestStorage.manifest_strict)  # jazzmin asks for {% static 'vendor/bootswatch' %}
+
+
+class GalleryVideoTests(BaseTest):
+    def test_videos_section_only_when_published(self):
+        from django.core.files.base import ContentFile
+
+        from apps.gallery.models import GalleryVideo
+
+        url = reverse("gallery:index")
+        self.assertNotContains(self.client.get(url), "videos-title")
+        v = GalleryVideo(title="Range clip")
+        v.video.save("clip.mp4", ContentFile(b"\x00\x00\x00\x18ftypmp42"), save=False)
+        v.save()
+        self.assertContains(self.client.get(url), "videos-title")
+        v.is_published = False
+        v.save()
+        self.assertNotContains(self.client.get(url), "videos-title")
+        v.video.delete(save=False)
+
+    def test_video_validator_rejects_wrong_type(self):
+        from django.core.exceptions import ValidationError
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        from apps.core.validators import validate_video_upload
+
+        with self.assertRaises(ValidationError):
+            validate_video_upload(SimpleUploadedFile("x.exe", b"abc"))
+        validate_video_upload(SimpleUploadedFile("x.mp4", b"abc"))

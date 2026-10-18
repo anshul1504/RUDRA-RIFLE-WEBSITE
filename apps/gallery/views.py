@@ -4,7 +4,7 @@ from apps.core.utils import page_enabled, paginate
 
 from apps.core.models import InstagramReel
 
-from .models import Category, GalleryImage
+from .models import Category, GalleryImage, GalleryVideo
 
 PER_PAGE = 12
 
@@ -23,6 +23,7 @@ def gallery_index(request):
         "images": page.object_list,
         "categories": categories,
         "active_category": active,
+        "videos": GalleryVideo.objects.filter(is_published=True)[:12],
         "reels": InstagramReel.objects.filter(is_published=True)[:12],
         "meta_description": "Photo gallery of training, events and the range at Rudra Sports Rifle Shooting Society, Indore.",
     })

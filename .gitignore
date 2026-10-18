@@ -10,6 +10,8 @@ venv/
 
 # Photos of people (incl. school children): never commit to a public repository. Upload separately.
 site_photos/*.jpg
+site_videos/*.mp4
+site_videos/*.jpg
 original_photos/*.jpg
 original_photos/*.jpeg
 original_photos/*.png

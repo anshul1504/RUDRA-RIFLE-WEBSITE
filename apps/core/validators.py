@@ -43,3 +43,19 @@ def validate_instagram_post_url(value):
         raise ValidationError("Enter a link on instagram.com.")
     if not re.match(r"^/(?:[A-Za-z0-9_.]+/)?(?:reel|reels|p|tv)/[A-Za-z0-9_-]{5,}/?$", parts.path):
         raise ValidationError("Paste the link of one specific reel or video, e.g. https://www.instagram.com/reel/XXXXXXXXXXX/ (not the profile).")
+
+
+VIDEO_EXTENSIONS = {".mp4", ".webm", ".mov"}
+MAX_VIDEO_MB = 60
+
+
+def validate_video_upload(upload):
+    """Short clips only: MP4 / WebM / MOV, up to 60 MB (keeps the page fast on mobile data)."""
+    import os
+
+    from django.core.exceptions import ValidationError
+
+    if os.path.splitext(upload.name)[1].lower() not in VIDEO_EXTENSIONS:
+        raise ValidationError("Upload an MP4, WebM or MOV video.")
+    if upload.size > MAX_VIDEO_MB * 1024 * 1024:
+        raise ValidationError(f"The video is larger than {MAX_VIDEO_MB} MB. Please compress it or upload a shorter clip.")
