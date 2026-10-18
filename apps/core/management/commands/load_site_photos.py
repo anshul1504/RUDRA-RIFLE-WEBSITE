@@ -35,7 +35,7 @@ GALLERY = {
     "inauguration-group": ("The academy team and guests", "Group photograph at the inauguration",
                            "Guests and the academy team standing together in front of the Rudra Sports banner", "Events"),
     # ---- remaining photos
-    "range-firing-line": ("The firing line", "Six numbered lanes facing the targets",
+    "range-firing-line": ("Six lanes, one target wall", "Numbered lanes facing the targets",
                           "The firing line with six numbered lanes, air rifles on the counter and the Rudra Sports target wall behind", "Range & Facilities"),
     "inauguration-equipment-table": ("Guests at the equipment table", "Well-wishers behind the rifles on opening day",
                                      "Guests standing together behind a table of air rifles, tools and flowers at the academy", "Events"),
