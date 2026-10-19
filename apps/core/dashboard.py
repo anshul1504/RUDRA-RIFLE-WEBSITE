@@ -36,6 +36,7 @@ def dashboard_callback(request, context):
         "recent_enquiries": AdmissionEnquiry.objects.order_by("-created_at")[:6] if user.has_perm("admissions.view_admissionenquiry") else [],
         "todays_slots": Slot.objects.filter(date=today).with_booked().order_by("start_time") if user.has_perm("bookings.view_slot") else [],
         "quick_links": [
+            ("Launch countdown", "fa-hourglass-half", reverse("admin:core_launchcountdown_changelist")),
             ("Homepage carousel", "fa-images", reverse("admin:core_heroslide_changelist")),
             ("Header menu visibility", "fa-bars", reverse("admin:core_menuitem_changelist")),
             ("Edit homepage text & contact details", "fa-sliders-h", reverse("admin:core_sitesettings_changelist")),

@@ -434,3 +434,12 @@ class MenuItem(TimeStamped):
 
     def __str__(self):
         return self.label
+
+
+class LaunchCountdown(SiteSettings):
+    """The launch countdown, shown as its own item in the admin sidebar (same record as Site settings)."""
+
+    class Meta:
+        proxy = True
+        verbose_name = "Launch countdown"
+        verbose_name_plural = "Launch countdown"

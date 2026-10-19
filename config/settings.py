@@ -238,6 +238,7 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
         {"name": "Dashboard", "url": "admin:index", "permissions": ["auth.view_user"]},
         {"name": "Website", "url": "/", "new_window": True},
+        {"name": "Countdown", "url": "admin:core_launchcountdown_changelist", "permissions": ["core.change_sitesettings"]},
         {"name": "Enquiries", "url": "admin:admissions_admissionenquiry_changelist", "permissions": ["admissions.view_admissionenquiry"]},
         {"name": "Slots", "url": "admin:bookings_slot_changelist", "permissions": ["bookings.view_slot"]},
     ],
@@ -247,11 +248,11 @@ JAZZMIN_SETTINGS = {
     "show_sidebar": True,
     "navigation_expanded": True,
     "order_with_respect_to": [
-        "bookings", "admissions", "contact", "core", "programs", "gallery", "events", "achievements", "auth",
+        "bookings", "admissions", "contact", "core", "core.launchcountdown", "core.sitesettings", "programs", "gallery", "events", "achievements", "auth",
     ],
     "icons": {
         "auth": "fas fa-users-cog", "auth.user": "fas fa-user", "auth.Group": "fas fa-users",
-        "core.sitesettings": "fas fa-sliders-h", "core.menuitem": "fas fa-bars", "core.heroslide": "fas fa-images", "core.announcement": "fas fa-bullhorn", "core.instagramreel": "fab fa-instagram",
+        "core.sitesettings": "fas fa-sliders-h", "core.launchcountdown": "fas fa-hourglass-half", "core.menuitem": "fas fa-bars", "core.heroslide": "fas fa-images", "core.announcement": "fas fa-bullhorn", "core.instagramreel": "fab fa-instagram",
         "core.testimonial": "fas fa-quote-right", "core.faq": "fas fa-question-circle", "core.facility": "fas fa-building",
         "core.contentitem": "fas fa-list-ul", "core.legalpage": "fas fa-gavel",
         "programs.program": "fas fa-bullseye", "gallery.galleryimage": "fas fa-photo-video", "gallery.category": "fas fa-tags",

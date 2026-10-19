@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.html import format_html
 
-from .models import Announcement, ContentItem, Faq, Facility, HeroSlide, InstagramReel, LegalPage, MenuItem, SiteSettings, Testimonial
+from .models import Announcement, LaunchCountdown, ContentItem, Faq, Facility, HeroSlide, InstagramReel, LegalPage, MenuItem, SiteSettings, Testimonial
 
 
 def thumb(image, size=56):
@@ -66,8 +66,6 @@ class SiteSettingsAdmin(BaseAdmin):
             "intro_heading", "about_intro", "about_mission_text", "vision_text", "mission_text", "safety_heading", "safety_text",
             "responsible_text", "cta_heading", "cta_text", "footer_description", "about_image", "about_image_alt",
         )}),
-        ("Launch countdown", {"classes": ["tab"], "fields": ("launch_countdown_enabled", "launch_at", "launch_heading", "launch_message"),
-            "description": "Staff who are logged in to the admin can always see the real website (to preview it). Everyone else sees the countdown until the launch time."}),
         ("Slot booking", {"classes": ["tab"], "fields": ("booking_intro", "booking_days_ahead", "booking_payment_note")}),
         ("Page switches", {"classes": ["tab"], "fields": ("show_achievements", "show_events", "show_gallery", "show_booking"),
             "description": "Turn whole sections of the website on or off. A switched-off page returns Not Found and its links disappear."}),
@@ -85,6 +83,37 @@ class SiteSettingsAdmin(BaseAdmin):
     def changelist_view(self, request, extra_context=None):
         # There is only one settings record: go straight to it.
         return redirect(reverse("admin:core_sitesettings_change", args=[SiteSettings.load().pk]))
+
+
+@admin.register(LaunchCountdown)
+class LaunchCountdownAdmin(BaseAdmin):
+    """Set the website launch time. Visitors see a countdown until then; the site opens by itself at zero."""
+
+    readonly_fields = ("launch_state",)
+    fieldsets = (
+        ("Launch", {"fields": ("launch_state", "launch_countdown_enabled", "launch_at"),
+                    "description": "If the guests arrive earlier or later, change the date and time and press Save. Open countdown pages follow the new time within half a minute. Untick 'Show launch countdown' to open the website immediately. Logged-in staff always see the real website (preview)."}),
+        ("Countdown page text", {"fields": ("launch_heading", "launch_message")}),
+    )
+
+    @admin.display(description="Status")
+    def launch_state(self, obj):
+        from django.utils import timezone
+
+        if not (obj.launch_countdown_enabled and obj.launch_at):
+            return badge("Website is open to everyone", "success")
+        if obj.launch_at <= timezone.now():
+            return badge("Launch time passed: website is open", "success")
+        return badge("Countdown running: website opens at " + timezone.localtime(obj.launch_at).strftime("%d %b %Y, %I:%M %p IST"), "warning")
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def changelist_view(self, request, extra_context=None):
+        return redirect(reverse("admin:core_launchcountdown_change", args=[SiteSettings.load().pk]))
 
 
 @admin.register(HeroSlide)
