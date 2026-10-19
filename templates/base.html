@@ -30,6 +30,7 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
+  {% if launch_staff_notice %}<div class="launch-notice" role="status"><b>Countdown is running for visitors.</b> You can see the real website because you are logged in as staff. Launch: {{ launch_staff_notice|date:"j M Y, g:i A" }} IST. <a href="/?preview=countdown">See the visitor countdown</a> &middot; <a href="/admin/core/launchcountdown/">Change time</a></div>{% endif %}
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   {% if announcement %}
   <div class="announce" id="announce" data-id="{{ announcement.pk }}" role="region" aria-label="Announcement">

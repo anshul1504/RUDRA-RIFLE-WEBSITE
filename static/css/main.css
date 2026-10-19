@@ -652,3 +652,6 @@ main { animation: pageIn .5s ease both; }
 .video-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
 .video-card { width: min(100%, 240px); aspect-ratio: 9 / 16; object-fit: cover; background: #000; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
 @media (max-width: 575.98px) { .video-card { width: calc(50% - .5rem); } }
+
+.launch-notice { background: #fff4d6; color: #5a3d00; font-size: .85rem; padding: .5rem 1rem; text-align: center; border-bottom: 2px solid var(--gold); position: relative; z-index: 2000; }
+.launch-notice a { color: #2e2109; font-weight: 600; text-decoration: underline; }

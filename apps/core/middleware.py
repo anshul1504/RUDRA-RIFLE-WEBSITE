@@ -25,8 +25,9 @@ class LaunchCountdownMiddleware:
         if remaining is None or remaining <= 0:
             return self.get_response(request)
         user = getattr(request, "user", None)
-        if user is not None and user.is_staff:  # the team can preview the real site while the countdown runs
-            return self.get_response(request)
+        request.launch_pending = True
+        if user is not None and user.is_staff and request.GET.get("preview") != "countdown":
+            return self.get_response(request)  # the team sees the real site while the countdown runs ("?preview=countdown" shows the visitor view)
         response = render(request, "launch/countdown.html", {"site": site, "remaining": remaining})
         response["Cache-Control"] = "no-store"
         response["X-Robots-Tag"] = "noindex, nofollow"

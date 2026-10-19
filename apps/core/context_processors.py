@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils import timezone
 
 from .menu import build_menu
 from .models import Announcement, SiteSettings
@@ -16,7 +17,16 @@ def site(request):
         "developer_credit": settings.DEVELOPER_CREDIT,
         "SITE_URL": settings.SITE_URL,
         "canonical_url": settings.SITE_URL + request.path,
+        "launch_staff_notice": _launch_notice(request, site),
     }
+
+
+def _launch_notice(request, site):
+    """For logged-in staff only: explain why they see the site while visitors still see the countdown."""
+    user = getattr(request, "user", None)
+    if not (user and user.is_staff and site.launch_countdown_enabled and site.launch_at):
+        return None
+    return site.launch_at if site.launch_at > timezone.now() else None
 
 
 

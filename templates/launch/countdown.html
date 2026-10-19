@@ -56,22 +56,26 @@
   <div class="live" id="live" role="status"><div>Welcome to <span>Rudra Sports</span></div></div>
   <script>
     (function () {
-      var end = performance.now() + {{ remaining }} * 1000, done = false;
+      var end = Date.now() + {{ remaining }} * 1000, done = false;
       var el = function (id) { return document.getElementById(id); };
       var pad = function (n) { return String(n).padStart(2, "0"); };
       function tick() {
-        var left = Math.max(0, Math.round((end - performance.now()) / 1000));
+        var left = Math.max(0, Math.round((end - Date.now()) / 1000));
         el("d").textContent = pad(Math.floor(left / 86400)); el("h").textContent = pad(Math.floor(left % 86400 / 3600));
         el("m").textContent = pad(Math.floor(left % 3600 / 60)); el("s").textContent = pad(left % 60);
         if (left === 0 && !done) { done = true; el("live").classList.add("on"); setTimeout(function () { location.reload(); }, 1600); }
       }
-      tick(); setInterval(tick, 250);
-      /* follow admin changes to the launch time (or an early opening) without a manual refresh */
-      setInterval(function () {
-        fetch("/launch-status/", { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
-          if (!done) { end = performance.now() + j.remaining * 1000; }
+      /* ask the server how much time is left: follows admin changes, and fixes the clock after the phone slept */
+      function sync() {
+        fetch("/launch-status/?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
+          if (done) { return; }
+          if (j.remaining <= 0) { end = Date.now(); } else { end = Date.now() + j.remaining * 1000; }
+          tick();
         }).catch(function () {});
-      }, 30000);
+      }
+      tick(); setInterval(tick, 250); setInterval(sync, 20000);
+      document.addEventListener("visibilitychange", function () { if (!document.hidden) { sync(); } });
+      window.addEventListener("pageshow", sync); window.addEventListener("focus", sync);
     })();
   </script>
 </body>

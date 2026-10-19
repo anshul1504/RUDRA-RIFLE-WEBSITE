@@ -513,3 +513,13 @@ class LaunchCountdownTests(BaseTest):
         self.assertTrue(self.client.get("/launch-status/").json()["remaining"] > 3500)
         self.set_launch(30, enabled=False)
         self.assertEqual(self.client.get("/launch-status/").json()["remaining"], 0)
+
+
+class LaunchStaffNoticeTests(LaunchCountdownTests):
+    def test_staff_sees_notice_and_can_preview_visitor_view(self):
+        self.set_launch(30)
+        staff = User.objects.create_user("preview2", password="x", is_staff=True)
+        self.client.force_login(staff)
+        home = self.client.get(reverse("core:home"))
+        self.assertContains(home, "Countdown is running for visitors")
+        self.assertContains(self.client.get("/?preview=countdown"), 'role="timer"')
