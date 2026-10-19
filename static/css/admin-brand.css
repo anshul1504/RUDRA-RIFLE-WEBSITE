@@ -81,3 +81,28 @@ input[type="checkbox"], input[type="radio"], progress, input[type="range"] { acc
 .help-block, .form-text, .help { color: #6b6455; }
 .nav-sidebar .nav-header { color: rgba(255, 255, 255, .55); }
 ::selection { background: var(--rs-gold); color: #24232B; }
+
+/* ---- Jazzmin 3.0.5 (AdminLTE 4 / Bootstrap 5) markup: same brass palette ---- */
+.app-main, .app-content, .app-wrapper { background: var(--rs-ivory) !important; }
+.app-sidebar, .app-sidebar.bg-body-secondary { background: linear-gradient(180deg, #4d3818 0%, #2e2109 100%) !important; --bs-body-bg: transparent; }
+.app-sidebar .sidebar-brand { border-bottom: 1px solid rgba(255, 255, 255, .15) !important; background: transparent !important; }
+.app-sidebar .nav-link { color: rgba(255, 255, 255, .88); }
+.app-sidebar .nav-link:hover { background: rgba(255, 255, 255, .1) !important; color: #fff; }
+.app-sidebar .sidebar-menu .nav-link.active, .app-sidebar .nav-sidebar .nav-link.active,
+.app-sidebar .nav-treeview > .nav-item > .nav-link.active { background: var(--rs-gold) !important; color: #24232B !important; box-shadow: none !important; }
+.app-sidebar .nav-header { color: rgba(255, 255, 255, .55); }
+.app-header, .app-header.navbar { border-bottom: 2px solid var(--rs-gold) !important; background: #fff !important; }
+.app-header .nav-link { color: #55535f; }
+.app-header .nav-link:hover { color: var(--rs-indigo); }
+.app-footer { background: #fff; border-top: 1px solid var(--rs-line); color: #55535f; font-size: .85rem; padding: .9rem 1.5rem; }
+.app-footer .rs-credit { float: right; }
+.app-footer a { color: var(--rs-indigo); font-weight: 600; }
+:root, [data-bs-theme="light"] { --bs-link-color: #4d3818; --bs-link-hover-color: #2e2109; --bs-primary: #4d3818; --bs-primary-rgb: 77, 56, 24; --bs-body-bg: #f8f7f3; }
+.btn-primary, .btn-info { --bs-btn-bg: #4d3818; --bs-btn-border-color: #4d3818; --bs-btn-hover-bg: #2e2109; --bs-btn-hover-border-color: #2e2109; --bs-btn-color: #fff; --bs-btn-hover-color: #fff; }
+.form-check-input:checked { background-color: var(--rs-indigo) !important; border-color: var(--rs-indigo) !important; }
+.form-control:focus, .form-select:focus { border-color: var(--rs-gold) !important; box-shadow: 0 0 0 .2rem rgba(217, 174, 74, .35) !important; }
+.card-header, .card { color: #24232B; }
+.login-logo img { background: #fff; padding: 14px 18px; border-radius: 14px; border-top: 4px solid var(--rs-gold); max-height: 130px; width: auto; }
+.login-logo img.logo-dark { display: none !important; }
+.app-sidebar .user-panel, .app-sidebar .user-panel a, .app-sidebar .user-panel .info, .app-sidebar .user-panel * { color: #fff !important; }
+.accent-indigo .app-sidebar .user-panel .info a:not(.x):not(.y):not(.z):not(.w):not(.v):not(.u), .accent-indigo .app-sidebar .user-panel .info span { color: #fff !important; }

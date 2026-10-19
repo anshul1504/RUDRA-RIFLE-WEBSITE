@@ -3,9 +3,9 @@
 (function () {
   var html = 'Designed &amp; Developed by <a href="https://thewebfix.in" target="_blank" rel="noopener">The Webfix</a>';
   function add() {
-    var slot = document.querySelector("footer.main-footer .float-right");
+    var slot = document.querySelector("footer.app-footer .float-end, footer.main-footer .float-right");
     if (slot) {
-      slot.className = "float-right d-none d-sm-inline-block rs-credit";
+      slot.className = "float-end d-none d-sm-inline-block rs-credit";
       slot.innerHTML = html;
       return;
     }

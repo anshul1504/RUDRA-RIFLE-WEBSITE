@@ -275,7 +275,7 @@ JAZZMIN_UI_TWEAKS = {
     "navbar_fixed": True, "layout_boxed": False, "footer_fixed": False, "sidebar_fixed": True,
     "sidebar": "sidebar-dark-indigo", "sidebar_nav_small_text": False, "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True, "sidebar_nav_compact_style": False, "sidebar_nav_legacy_style": False,
-    "sidebar_nav_flat_style": False, "theme": "default", "dark_mode_theme": None,
+    "sidebar_nav_flat_style": False, "theme": "default", "default_theme_mode": "light",
     "button_classes": {
         "primary": "btn-primary", "secondary": "btn-secondary", "info": "btn-info", "warning": "btn-warning",
         "danger": "btn-danger", "success": "btn-success",
