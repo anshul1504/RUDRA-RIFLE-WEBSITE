@@ -55,6 +55,19 @@ class SiteSettings(TimeStamped):
     show_achievements = models.BooleanField("Show Achievements page", default=True, help_text="Untick to hide the page, its menu links and the homepage section.")
     show_events = models.BooleanField("Show Events page", default=True)
     show_gallery = models.BooleanField("Show Gallery page", default=True)
+    launch_countdown_enabled = models.BooleanField(
+        "Show launch countdown", default=False,
+        help_text="While ticked and the launch time is in the future, visitors see only the countdown page. When the countdown reaches zero the website is revealed automatically. Untick to open the website right away.",
+    )
+    launch_at = models.DateTimeField(
+        "Launch date and time", null=True, blank=True,
+        help_text="Indian time (IST). If the guests arrive earlier or later, change this time and save: open countdown pages follow the new time within half a minute.",
+    )
+    launch_heading = models.CharField("Countdown heading", max_length=120, default="We are launching soon")
+    launch_message = models.CharField(
+        "Countdown message", max_length=240, blank=True,
+        default="Rifle & pistol shooting training in Indore. The website opens when the countdown ends.",
+    )
     show_booking = models.BooleanField("Show Slot booking", default=True, help_text="Controls /book/, the homepage Pay and Play section and Book a slot buttons.")
 
     contact_image = models.ImageField(upload_to="site/", blank=True, validators=[validate_image_upload], help_text="Banner photo on the Contact page.")

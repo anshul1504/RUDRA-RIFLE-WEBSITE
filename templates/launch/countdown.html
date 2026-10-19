@@ -1,0 +1,78 @@
+{% load static %}<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#4d3818">
+  <title>{{ site.launch_heading }} | {{ site.organisation_name }}, {{ site.city }}</title>
+  <link rel="icon" href="{% static 'images/rudra-logo.svg' %}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bronze: #4d3818; --deep: #2e2109; --gold: #d9ae4a; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 1.5rem; text-align: center; color: #fff;
+      font-family: Poppins, system-ui, "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at 50% 40%, #6a4e22 0%, var(--bronze) 45%, var(--deep) 100%); overflow-x: hidden; }
+    .rings { position: fixed; inset: 0; pointer-events: none; opacity: .13; display: grid; place-items: center; }
+    .rings i { position: absolute; border: 2px solid var(--gold); border-radius: 50%; }
+    main { position: relative; width: min(100%, 780px); animation: rise .9s cubic-bezier(.2, .7, .2, 1) both; }
+    .logo { background: #fff; display: inline-block; padding: .7rem 1.1rem; border-radius: 12px; border-top: 4px solid var(--gold); }
+    .logo img { display: block; width: 120px; height: auto; }
+    .eyebrow { color: var(--gold); letter-spacing: .2em; font-size: .8rem; font-weight: 600; text-transform: uppercase; margin: 1.6rem 0 .4rem; }
+    h1 { font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.1; margin: 0 0 .8rem; font-weight: 700; }
+    p.msg { color: rgba(255, 255, 255, .85); max-width: 34rem; margin: 0 auto 2rem; line-height: 1.6; }
+    .clock { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(.5rem, 2vw, 1rem); margin: 0 auto 1.6rem; max-width: 560px; }
+    .clock div { background: rgba(255, 255, 255, .08); border: 1px solid rgba(217, 174, 74, .4); border-radius: 12px; padding: clamp(.8rem, 3vw, 1.4rem) .3rem; }
+    .clock b { display: block; font-size: clamp(1.8rem, 7vw, 3.2rem); line-height: 1; font-variant-numeric: tabular-nums; }
+    .clock small { display: block; margin-top: .5rem; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+    .when { color: rgba(255, 255, 255, .8); font-size: .95rem; margin-bottom: 1.6rem; }
+    .contact { font-size: .9rem; color: rgba(255, 255, 255, .75); }
+    .contact a, .credit a { color: var(--gold); text-decoration: none; font-weight: 600; }
+    .credit { margin-top: 2rem; font-size: .75rem; color: rgba(255, 255, 255, .6); }
+    .live { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bronze); opacity: 0; pointer-events: none; transition: opacity .8s ease; font-size: clamp(2rem, 7vw, 4rem); font-weight: 700; }
+    .live span { color: var(--gold); }
+    .live.on { opacity: 1; pointer-events: auto; }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { main { animation: none; } .live { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="rings" aria-hidden="true"><i style="width:34vmin;height:34vmin"></i><i style="width:58vmin;height:58vmin"></i><i style="width:82vmin;height:82vmin"></i><i style="width:106vmin;height:106vmin"></i></div>
+  <main>
+    <div class="logo"><img src="{% static 'images/rudra-logo.svg' %}" width="120" height="88" alt="{{ site.organisation_name }}, {{ site.city }} (M.P.) logo"></div>
+    <p class="eyebrow">{{ site.organisation_name }} &middot; {{ site.city }}</p>
+    <h1>{{ site.launch_heading }}</h1>
+    {% if site.launch_message %}<p class="msg">{{ site.launch_message }}</p>{% endif %}
+    <div class="clock" role="timer" aria-live="off" aria-label="Time left until the website launch">
+      <div><b id="d">00</b><small>Days</small></div><div><b id="h">00</b><small>Hours</small></div>
+      <div><b id="m">00</b><small>Minutes</small></div><div><b id="s">00</b><small>Seconds</small></div>
+    </div>
+    <p class="when">Launching on <strong>{{ site.launch_at|date:"l, j F Y" }}</strong> at <strong>{{ site.launch_at|date:"g:i A" }}</strong> (IST)</p>
+    {% if site.phone %}<p class="contact">Call <a href="{{ site.phone_href }}">{{ site.phone }}</a></p>{% endif %}
+    <p class="credit">Designed &amp; Developed by <a href="https://thewebfix.in" target="_blank" rel="noopener">The Webfix</a></p>
+  </main>
+  <div class="live" id="live" role="status"><div>Welcome to <span>Rudra Sports</span></div></div>
+  <script>
+    (function () {
+      var end = performance.now() + {{ remaining }} * 1000, done = false;
+      var el = function (id) { return document.getElementById(id); };
+      var pad = function (n) { return String(n).padStart(2, "0"); };
+      function tick() {
+        var left = Math.max(0, Math.round((end - performance.now()) / 1000));
+        el("d").textContent = pad(Math.floor(left / 86400)); el("h").textContent = pad(Math.floor(left % 86400 / 3600));
+        el("m").textContent = pad(Math.floor(left % 3600 / 60)); el("s").textContent = pad(left % 60);
+        if (left === 0 && !done) { done = true; el("live").classList.add("on"); setTimeout(function () { location.reload(); }, 1600); }
+      }
+      tick(); setInterval(tick, 250);
+      /* follow admin changes to the launch time (or an early opening) without a manual refresh */
+      setInterval(function () {
+        fetch("/launch-status/", { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
+          if (!done) { end = performance.now() + j.remaining * 1000; }
+        }).catch(function () {});
+      }, 30000);
+    })();
+  </script>
+</body>
+</html>

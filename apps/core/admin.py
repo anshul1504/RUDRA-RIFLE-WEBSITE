@@ -66,6 +66,8 @@ class SiteSettingsAdmin(BaseAdmin):
             "intro_heading", "about_intro", "about_mission_text", "vision_text", "mission_text", "safety_heading", "safety_text",
             "responsible_text", "cta_heading", "cta_text", "footer_description", "about_image", "about_image_alt",
         )}),
+        ("Launch countdown", {"classes": ["tab"], "fields": ("launch_countdown_enabled", "launch_at", "launch_heading", "launch_message"),
+            "description": "Staff who are logged in to the admin can always see the real website (to preview it). Everyone else sees the countdown until the launch time."}),
         ("Slot booking", {"classes": ["tab"], "fields": ("booking_intro", "booking_days_ahead", "booking_payment_note")}),
         ("Page switches", {"classes": ["tab"], "fields": ("show_achievements", "show_events", "show_gallery", "show_booking"),
             "description": "Turn whole sections of the website on or off. A switched-off page returns Not Found and its links disappear."}),

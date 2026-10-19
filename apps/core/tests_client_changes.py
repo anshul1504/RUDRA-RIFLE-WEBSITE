@@ -475,3 +475,41 @@ class GalleryVideoTests(BaseTest):
         with self.assertRaises(ValidationError):
             validate_video_upload(SimpleUploadedFile("x.exe", b"abc"))
         validate_video_upload(SimpleUploadedFile("x.mp4", b"abc"))
+
+
+class LaunchCountdownTests(BaseTest):
+    def set_launch(self, minutes, enabled=True):
+        s = SiteSettings.load()
+        s.launch_countdown_enabled = enabled
+        s.launch_at = timezone.now() + timedelta(minutes=minutes)
+        s.save()
+
+    def test_countdown_shown_before_launch_time(self):
+        self.set_launch(30)
+        r = self.client.get(reverse("core:home"))
+        self.assertContains(r, 'role="timer"')
+        self.assertNotContains(r, "Admission Enquiry")
+        self.assertEqual(r["X-Robots-Tag"], "noindex, nofollow")
+        self.assertContains(self.client.get(reverse("contact:contact")), 'role="timer"')
+
+    def test_site_opens_after_launch_time_or_when_switched_off(self):
+        self.set_launch(-1)
+        self.assertNotContains(self.client.get(reverse("core:home")), 'role="timer"')
+        self.set_launch(30, enabled=False)
+        self.assertNotContains(self.client.get(reverse("core:home")), 'role="timer"')
+
+    def test_admin_static_and_staff_preview_stay_open(self):
+        self.set_launch(30)
+        self.assertNotContains(self.client.get("/admin/login/"), 'role="timer"')
+        staff = User.objects.create_user("preview", password="x", is_staff=True)
+        self.client.force_login(staff)
+        self.assertNotContains(self.client.get(reverse("core:home")), 'role="timer"')
+
+    def test_status_endpoint_follows_admin_changes(self):
+        self.set_launch(30)
+        first = self.client.get("/launch-status/").json()["remaining"]
+        self.assertTrue(1700 < first <= 1800)
+        self.set_launch(60)
+        self.assertTrue(self.client.get("/launch-status/").json()["remaining"] > 3500)
+        self.set_launch(30, enabled=False)
+        self.assertEqual(self.client.get("/launch-status/").json()["remaining"], 0)
