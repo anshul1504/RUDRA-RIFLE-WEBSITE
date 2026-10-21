@@ -8,7 +8,8 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.core.models import SiteSettings
-from apps.core.utils import acknowledge, notify_staff, page_enabled, paginate, throttled
+from apps.core import emails
+from apps.core.utils import page_enabled, paginate, throttled
 
 from .forms import SeatsUnavailable, SlotBookingForm
 from .models import Slot, SlotBooking, SlotSchedule
@@ -86,13 +87,8 @@ def book_slot(request, pk):
                 form.add_error(None, exc)
             else:
                 logger.info("Slot booking %s received", booking.reference)
-                notify_staff(
-                    f"New slot booking {booking.reference}: {booking.name}",
-                    f"{booking.name} ({booking.mobile}) booked {booking.participants} seat(s) for {slot}.\n"
-                    f"Type: {booking.get_shooting_type_display()}\nExperience: {booking.get_experience_level_display()}",
-                )
-                acknowledge(booking.email, f"Booking request {booking.reference}", booking.name,
-                            f"We received your booking request for {slot}. Reference: {booking.reference}. The academy will confirm your slot with you.")
+                emails.booking_alert(booking)
+                emails.booking_received(booking)
                 request.session["booking_ref"] = booking.reference
                 return redirect("bookings:confirmation", reference=booking.reference)
             messages.error(request, "We could not complete the booking. Please check the details below.")

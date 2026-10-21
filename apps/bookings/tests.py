@@ -3,7 +3,7 @@ from datetime import time, timedelta
 from django.contrib.auth.models import Group, User
 from django.core.cache import cache
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -333,3 +333,48 @@ class DateFilterTests(TestCase):
         self.assertContains(self.client.get(url, {"time": "evening"}), "No slots match these filters")
         self.assertContains(self.client.get(url, {"seats": "1", "program": "999"}), "No slots match these filters")
         self.assertContains(self.client.get(url, {"time": "bogus", "date": "x"}), "Early")
+
+
+class BookingEmailTests(TestCase):
+    def setUp(self):
+        cache.clear()
+        SlotSchedule.objects.all().delete()
+        self.slot = make_slot(2, title="Morning", capacity=5)
+        self.staff = User.objects.create_superuser("boss", "boss@example.com", "pw")
+
+    def _book(self, email="guest@example.com"):
+        return SlotBooking.objects.create(slot=self.slot, name="Riya Verma", mobile="9876543210", email=email, participants=2)
+
+    @override_settings(ENQUIRY_NOTIFY_EMAILS=["staff@example.com"])
+    def test_public_booking_sends_alert_and_received_mail(self):
+        from django.core import mail
+
+        data = {"name": "Riya Verma", "mobile": "9876543210", "email": "riya@example.com", "participants": 1,
+                "experience_level": "beginner", "shooting_type": "10m_air_rifle", "consent": "on"}
+        self.client.post(reverse("bookings:book", args=[self.slot.pk]), data)
+        self.assertEqual([m.to for m in mail.outbox], [["staff@example.com"], ["riya@example.com"]])
+        self.assertIn("received your booking request", mail.outbox[1].alternatives[0][0])
+
+    def test_confirm_and_cancel_from_admin_email_the_visitor_once(self):
+        from django.core import mail
+
+        b = self._book()
+        self.client.force_login(self.staff)
+        url = reverse("admin:bookings_slotbooking_changelist")
+        self.client.post(url, {"action": "confirm", "_selected_action": [b.pk]})
+        self.client.post(url, {"action": "confirm", "_selected_action": [b.pk]})  # already confirmed: no second mail
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("confirmed", mail.outbox[0].subject)
+        self.client.post(url, {"action": "cancel", "_selected_action": [b.pk]})
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertIn("cancelled", mail.outbox[1].subject)
+        self.client.post(url, {"action": "mark_attended", "_selected_action": [b.pk]})
+        self.assertEqual(len(mail.outbox), 2)  # attended is not emailed
+
+    def test_no_mail_when_visitor_gave_no_email(self):
+        from django.core import mail
+
+        b = self._book(email="")
+        self.client.force_login(self.staff)
+        self.client.post(reverse("admin:bookings_slotbooking_changelist"), {"action": "confirm", "_selected_action": [b.pk]})
+        self.assertEqual(len(mail.outbox), 0)

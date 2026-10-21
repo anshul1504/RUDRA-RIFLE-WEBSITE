@@ -352,11 +352,17 @@ class NotificationTests(BaseTest):
 
         self.client.post(reverse("admissions:enquiry"), VALID)
         self.assertEqual(len(mail.outbox), 2)
-        self.assertEqual(mail.outbox[0].to, ["staff@example.com"])
-        self.assertIn("Aarav Sharma", mail.outbox[0].subject)
-        self.assertEqual(mail.outbox[1].to, ["aarav@example.com"])
-        self.assertIn("Namaste Aarav Sharma", mail.outbox[1].body)
-        self.assertIn("info@rudrasports.com", mail.outbox[1].body)
+        alert, thanks = mail.outbox
+        self.assertEqual(alert.to, ["staff@example.com"])
+        self.assertEqual(alert.reply_to, ["aarav@example.com"])
+        self.assertIn("Aarav Sharma", alert.subject)
+        self.assertEqual(thanks.to, ["aarav@example.com"])
+        self.assertIn("Namaste Aarav Sharma", thanks.body)
+        self.assertIn("get back to you", thanks.body)
+        self.assertIn("info@rudrasports.com", thanks.body)
+        html = thanks.alternatives[0][0]
+        self.assertIn("Thank you for your enquiry", html)
+        self.assertIn("/static/images/rudra-logo.png", html)
 
     def test_only_applicant_acknowledged_when_staff_email_unset(self):
         from django.core import mail
@@ -365,14 +371,17 @@ class NotificationTests(BaseTest):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ["aarav@example.com"])
 
-    def test_no_acknowledgement_without_email(self):
+    def test_no_booking_mail_without_email(self):
         from django.core import mail
 
-        from .utils import acknowledge
+        from . import emails
 
-        acknowledge("", "Subject", "Name", "Body")
+        class Dummy:
+            email = ""
+
+        self.assertFalse(emails.booking_received(Dummy()))
+        self.assertFalse(emails.booking_confirmed(Dummy()))
         self.assertEqual(len(mail.outbox), 0)
-
 
 class ExtraContentTests(BaseTest):
     def test_announcement_bar(self):

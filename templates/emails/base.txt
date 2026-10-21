@@ -1,0 +1,18 @@
+{% autoescape off %}{{ heading }}
+{{ site.organisation_name }}, {{ site.city }}
+
+{% if greeting %}{{ greeting }}
+
+{% endif %}{% for p in paragraphs %}{{ p }}
+
+{% endfor %}{% for label, value in details %}{{ label }}: {{ value }}
+{% endfor %}{% if button %}
+{{ button.0 }}: {{ button.1 }}
+{% endif %}{% if note %}
+{{ note }}
+{% endif %}
+Warm regards,
+Team {{ site.organisation_name }}
+{% if site.address %}{{ site.address }}{% endif %}
+{% if site.phone %}Phone: {{ site.phone }}{% endif %}{% if site.email %} | {{ site.email }}{% endif %}
+{% endautoescape %}

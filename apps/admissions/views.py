@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 
 from apps.core.models import Faq
-from apps.core.utils import acknowledge, notify_staff, throttled
+from apps.core import emails
+from apps.core.utils import throttled
 from apps.programs.models import Program
 
 from .forms import AdmissionEnquiryForm
@@ -20,16 +21,8 @@ def enquiry(request):
         elif form.is_valid():
             obj = form.save()
             logger.info("Admission enquiry %s received", obj.pk)
-            notify_staff(
-                f"New admission enquiry: {obj.applicant_name}",
-                f"Name: {obj.applicant_name} ({obj.city})\nDate of birth: {obj.date_of_birth}\n"
-                f"Mobile: {obj.mobile}\nEmail: {obj.email}\n"
-                + (f"Guardian: {obj.guardian_name} {obj.guardian_mobile}\n" if obj.guardian_name else "")
-                + f"Program: {obj.program or 'General'}\nType of shooting: {obj.get_shooting_interest_display()}\n"
-                f"Experience: {obj.get_experience_level_display()}\nPreferred contact: {obj.get_preferred_contact_display()}\n\n{obj.message}",
-            )
-            acknowledge(obj.email, "We received your admission enquiry", obj.applicant_name,
-                        "Thank you for your admission enquiry. Our team will contact you soon.")
+            emails.enquiry_alert(obj)
+            emails.enquiry_received(obj)
             request.session["admission_submitted"] = True
             return redirect("admissions:thanks")
         else:

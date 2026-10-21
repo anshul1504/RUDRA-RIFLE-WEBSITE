@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>{{ heading }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f1ede3;font-family:Arial,Helvetica,sans-serif;color:#24232b;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">{{ heading }}{% if paragraphs %}: {{ paragraphs.0 }}{% endif %}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1ede3;">
+<tr><td align="center" style="padding:24px 12px;">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;">
+
+    <!-- header -->
+    <tr><td align="center" style="background:#4d3818;border-radius:12px 12px 0 0;padding:26px 20px 22px;">
+      <table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="background:#ffffff;border-radius:10px;border-top:4px solid #d9ae4a;padding:10px 16px;">
+        <img src="{{ logo_url }}" width="120" alt="{{ site.organisation_name }}" style="display:block;border:0;height:auto;max-width:120px;">
+      </td></tr></table>
+      <div style="color:#d9ae4a;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:bold;margin-top:14px;">{{ site.organisation_name }} &middot; {{ site.city }}</div>
+    </td></tr>
+
+    <!-- body -->
+    <tr><td style="background:#ffffff;padding:30px 30px 8px;border-left:1px solid #e6dfcf;border-right:1px solid #e6dfcf;">
+      <h1 style="margin:0 0 14px;font-size:24px;line-height:1.25;color:#4d3818;font-family:Arial,Helvetica,sans-serif;">{{ heading }}</h1>
+      {% if greeting %}<p style="margin:0 0 12px;font-size:15px;line-height:1.6;">{{ greeting }}</p>{% endif %}
+      {% for p in paragraphs %}<p style="margin:0 0 14px;font-size:15px;line-height:1.6;color:#3a3a44;">{{ p }}</p>{% endfor %}
+
+      {% if details %}
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 18px;border:1px solid #e6dfcf;border-radius:8px;border-collapse:separate;border-spacing:0;">
+        {% for label, value in details %}
+        <tr>
+          <td valign="top" width="34%" style="background:#f6efdd;padding:9px 12px;font-size:13px;font-weight:bold;color:#4d3818;border-top:{% if not forloop.first %}1px solid #e6dfcf{% else %}0{% endif %};">{{ label }}</td>
+          <td valign="top" style="padding:9px 12px;font-size:14px;color:#24232b;border-top:{% if not forloop.first %}1px solid #e6dfcf{% else %}0{% endif %};white-space:pre-line;">{{ value }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+
+      {% if button %}
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0 22px;"><tr>
+        <td align="center" style="background:#d9ae4a;border-radius:6px;"><a href="{{ button.1 }}" style="display:inline-block;padding:12px 26px;font-size:15px;font-weight:bold;color:#24232b;text-decoration:none;font-family:Arial,Helvetica,sans-serif;">{{ button.0 }}</a></td>
+      </tr></table>
+      {% endif %}
+
+      {% if note %}<p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#6b6455;">{{ note }}</p>{% endif %}
+      <p style="margin:0 0 22px;font-size:14px;line-height:1.6;color:#3a3a44;">Warm regards,<br><b style="color:#4d3818;">Team {{ site.organisation_name }}</b></p>
+    </td></tr>
+
+    <!-- footer -->
+    <tr><td style="background:#2e2109;border-radius:0 0 12px 12px;padding:20px 26px;text-align:center;">
+      <div style="color:#ffffff;font-size:13px;line-height:1.7;">
+        {% if site.address %}{{ site.address }}<br>{% endif %}
+        {% if site.phone %}Call <a href="{{ site.phone_href }}" style="color:#d9ae4a;text-decoration:none;font-weight:bold;">{{ site.phone }}</a>{% endif %}{% if site.email %} &middot; <a href="mailto:{{ site.email }}" style="color:#d9ae4a;text-decoration:none;font-weight:bold;">{{ site.email }}</a>{% endif %}
+      </div>
+      <div style="color:#bfb393;font-size:11px;margin-top:12px;">&copy; {{ year }} {{ site.organisation_name }} &middot; Designed &amp; Developed by <a href="https://thewebfix.in" style="color:#d9ae4a;text-decoration:none;">The Webfix</a></div>
+    </td></tr>
+  </table>
+  <div style="font-size:11px;color:#8a8473;margin-top:12px;max-width:600px;">You are receiving this email because it was used on {{ site_url }}.</div>
+</td></tr>
+</table>
+</body>
+</html>

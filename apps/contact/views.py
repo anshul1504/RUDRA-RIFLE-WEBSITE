@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 
 from apps.core.models import Faq
-from apps.core.utils import acknowledge, notify_staff, throttled
+from apps.core import emails
+from apps.core.utils import throttled
 
 from .forms import ContactForm
 
@@ -19,12 +20,8 @@ def contact(request):
         elif form.is_valid():
             obj = form.save()
             logger.info("Contact message %s received", obj.pk)
-            notify_staff(
-                f"New website message: {obj.subject}",
-                f"From: {obj.name} <{obj.email}> {obj.phone}\n\n{obj.message}",
-            )
-            acknowledge(obj.email, "We received your message", obj.name,
-                        "Thank you for writing to us. We will reply as soon as we can.")
+            emails.contact_alert(obj)
+            emails.contact_received(obj)
             request.session["contact_submitted"] = True
             return redirect("contact:thanks")
         else:

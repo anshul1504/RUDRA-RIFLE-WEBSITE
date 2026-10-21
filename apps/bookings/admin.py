@@ -102,8 +102,27 @@ class SlotBookingAdmin(BaseAdmin):
     def status_badge(self, obj):
         return badge(obj.get_status_display(), {"pending": "warning", "confirmed": "info", "attended": "success", "cancelled": "danger"}[obj.status])
 
+    @staticmethod
+    def _notify(booking):
+        """Email the visitor when the academy confirms or cancels (only on a real change of status)."""
+        from apps.core import emails
+
+        if booking.status == SlotBooking.Status.CONFIRMED:
+            emails.booking_confirmed(booking)
+        elif booking.status == SlotBooking.Status.CANCELLED:
+            emails.booking_cancelled(booking)
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if change and "status" in form.changed_data:
+            self._notify(obj)
+
     def _set(self, request, queryset, status, text):
+        changed = list(queryset.exclude(status=status).select_related("slot", "slot__program"))
         n = queryset.update(status=status)
+        for booking in changed:
+            booking.status = status
+            self._notify(booking)
         self.message_user(request, f"{n} booking(s) {text}.", messages.SUCCESS)
 
     @admin.action(description="Confirm selected bookings")

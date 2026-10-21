@@ -5,7 +5,6 @@ import unicodedata
 
 from django.conf import settings
 from django.core.cache import cache
-from django.core.mail import send_mail
 from django.utils.html import strip_tags
 
 logger = logging.getLogger(__name__)
@@ -34,17 +33,6 @@ def throttled(request, scope):
         return True
     cache.set(key, count + 1, settings.FORM_THROTTLE_WINDOW)
     return False
-
-
-def notify_staff(subject, body):
-    """Email the academy about a new enquiry. Never raises; failures are logged."""
-    recipients = settings.ENQUIRY_NOTIFY_EMAILS
-    if not recipients:
-        return
-    try:
-        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipients, fail_silently=False)
-    except Exception:  # noqa: BLE001 - never break the visitor's submission
-        logger.exception("Could not send notification email")
 
 
 def optimise_image(field_file, max_side=2000, quality=85):
@@ -79,24 +67,6 @@ def optimise_image(field_file, max_side=2000, quality=85):
             field_file.file.seek(0)
         except Exception:  # noqa: BLE001
             pass
-
-
-def acknowledge(to_email, subject, name, message):
-    """Send a short acknowledgement to the visitor (only when they gave an email). Never raises."""
-    if not to_email:
-        return
-    from .models import SiteSettings
-
-    site = SiteSettings.load()
-    body = (
-        f"Namaste {name},\n\n{message}\n\n"
-        f"For anything urgent, call {site.phone}.\n\n"
-        f"{site.organisation_name}\n{site.address}\n{site.email}\n"
-    )
-    try:
-        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [to_email], fail_silently=False)
-    except Exception:  # noqa: BLE001
-        logger.exception("Could not send acknowledgement email")
 
 
 def page_enabled(flag):
