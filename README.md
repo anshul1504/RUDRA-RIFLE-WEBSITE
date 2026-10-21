@@ -188,3 +188,9 @@ The site uses the academy's own photographs (from the shared Drive folder "Rudra
 4. `python manage.py migrate`, `python manage.py collectstatic --noinput`, `python manage.py createsuperuser`, `python manage.py create_staff_groups`.
 5. Copy the photos into `site_photos/` and run `python manage.py load_site_photos`.
 6. Restart the app (Setup Python App > Restart, or `touch tmp/restart.txt`).
+
+## Email (SMTP)
+
+Alerts to the academy and thank-you / booking confirmation emails use branded HTML templates (`templates/emails/`, `apps/core/emails.py`).
+Set these in `.env` on the server (never commit them): `EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend`, `EMAIL_HOST`, `EMAIL_PORT=465`,
+`EMAIL_USE_SSL=True`, `EMAIL_USE_TLS=False`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL`, `ENQUIRY_NOTIFY_EMAILS`.
